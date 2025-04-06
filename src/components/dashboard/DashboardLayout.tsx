@@ -84,27 +84,23 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
                   minSize={20}
                   onResize={(size) => onPanelResize(widget.id, size)}
                 >
-                  <ResizablePanelGroup direction="vertical">
-                    <ResizablePanel defaultSize={100} minSize={100}>
-                      <DashboardWidget
-                        id={widget.id}
-                        title={widget.title}
-                        description={widget.description}
-                        onRemove={onRemoveWidget}
-                        onMaximize={onMaximizeWidget}
-                        onRefresh={onRefreshWidget}
-                        className={isEditMode ? "border-dashed border-2 h-full" : "h-full"}
-                      >
-                        <WidgetContent
-                          type={widget.type}
-                          data={{
-                            tasks: widgetData[`${widget.type}Tasks`],
-                            stats: widgetData.stats
-                          }}
-                        />
-                      </DashboardWidget>
-                    </ResizablePanel>
-                  </ResizablePanelGroup>
+                  <DashboardWidget
+                    id={widget.id}
+                    title={widget.title}
+                    description={widget.description}
+                    onRemove={onRemoveWidget}
+                    onMaximize={onMaximizeWidget}
+                    onRefresh={onRefreshWidget}
+                    className={isEditMode ? "border-dashed border-2 h-full" : "h-full"}
+                  >
+                    <WidgetContent
+                      type={widget.type}
+                      data={{
+                        tasks: widgetData[`${widget.type}Tasks`],
+                        stats: widgetData.stats
+                      }}
+                    />
+                  </DashboardWidget>
                 </ResizablePanel>
               </React.Fragment>
             ))}

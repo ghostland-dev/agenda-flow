@@ -202,8 +202,8 @@ const DashboardState: React.FC<DashboardStateProps> = ({ focusMode = false, chil
     'today-tasksTasks': todayTasks,
     'urgent-tasksTasks': urgentTasks,
     'overdue-tasksTasks': overdueTasks,
-    stats,
-    'task-optimizerTasks': optimizedTasks
+    'task-optimizerTasks': optimizedTasks,
+    stats
   };
 
   return children({

@@ -53,7 +53,7 @@ const DashboardWidget: React.FC<WidgetProps> = ({
       isMaximized && "fixed top-0 left-0 right-0 bottom-0 z-50 m-4 rounded-lg shadow-2xl",
       className)}>
       <CardHeader className="p-4 pb-2 flex flex-row items-center justify-between space-y-0 bg-card/60">
-        <div className="space-y-0.5 flex items-center">
+        <div className="flex items-center">
           <Move className="h-4 w-4 mr-2 text-muted-foreground drag-handle cursor-move" />
           <div>
             <CardTitle className="text-md font-medium">{title}</CardTitle>
