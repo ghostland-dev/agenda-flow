@@ -24,12 +24,14 @@ interface TaskCardProps {
   task: Task;
   onStatusChange?: () => void;
   compact?: boolean;
+  className?: string;
 }
 
 export const TaskCard: React.FC<TaskCardProps> = ({ 
   task, 
   onStatusChange,
-  compact = false
+  compact = false,
+  className
 }) => {
   const { toast } = useToast();
   
@@ -98,7 +100,8 @@ export const TaskCard: React.FC<TaskCardProps> = ({
         className={cn(
           "relative border rounded-lg hover:border-primary transition-colors",
           isOverdue && !task.completed && "border-destructive",
-          task.completed && "bg-muted/30"
+          task.completed && "bg-muted/30",
+          className
         )}
       >
         {compact ? (
