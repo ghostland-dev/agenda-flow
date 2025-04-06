@@ -2,6 +2,8 @@
 import React from 'react';
 import { ReactSortable } from 'react-sortablejs';
 import DashboardLayout from './DashboardLayout';
+import DashboardWidget from './DashboardWidget';
+import WidgetContent from './WidgetContent';
 import { WidgetConfig } from './widgetUtils';
 
 interface DashboardContentProps {
