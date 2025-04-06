@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
 import { LayoutGrid, LayoutList, GripHorizontal } from 'lucide-react';
@@ -17,6 +18,9 @@ const LayoutControls: React.FC<LayoutControlsProps> = ({
   onToggleLayout,
   onChangeWidgetsPerRow
 }) => {
+  // Add a fallback default value in case widgetsPerRow is undefined
+  const safeWidgetsPerRow = widgetsPerRow || 3;
+  
   return (
     <div className="flex items-center gap-2">
       <Button
@@ -44,7 +48,7 @@ const LayoutControls: React.FC<LayoutControlsProps> = ({
             <TooltipTrigger asChild>
               <ToggleGroup 
                 type="single" 
-                value={widgetsPerRow.toString()} 
+                value={safeWidgetsPerRow.toString()} 
                 onValueChange={(value) => {
                   if (value) onChangeWidgetsPerRow(parseInt(value, 10));
                 }}

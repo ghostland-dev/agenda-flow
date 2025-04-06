@@ -16,6 +16,7 @@ export interface DashboardStateResult {
   stats: any;
   widgetData: any;
   maximizedWidgetId: string | null;
+  widgetsPerRow: number;
   handleAddWidget: (type: string) => void;
   handleRemoveWidget: (id: string) => void;
   handleMaximizeWidget: (id: string) => void;
@@ -24,6 +25,7 @@ export interface DashboardStateResult {
   handleSortEnd: (newOrder: WidgetConfig[]) => void;
   handleToggleLayout: () => void;
   handleToggleEditMode: () => void;
+  handleChangeWidgetsPerRow: (count: number) => void;
 }
 
 export function useDashboardState(focusMode = false): DashboardStateResult {
@@ -49,10 +51,12 @@ export function useDashboardState(focusMode = false): DashboardStateResult {
   const { 
     layout, 
     isEditMode, 
-    maximizedWidgetId, 
+    maximizedWidgetId,
+    widgetsPerRow,
     handleMaximizeWidget, 
     handleToggleLayout, 
-    handleToggleEditMode 
+    handleToggleEditMode,
+    handleChangeWidgetsPerRow 
   } = useDashboardLayout();
 
   // Combine all the hooks into one result
@@ -67,6 +71,7 @@ export function useDashboardState(focusMode = false): DashboardStateResult {
     stats,
     widgetData,
     maximizedWidgetId,
+    widgetsPerRow,
     handleAddWidget,
     handleRemoveWidget,
     handleMaximizeWidget,
@@ -74,6 +79,7 @@ export function useDashboardState(focusMode = false): DashboardStateResult {
     handlePanelResize,
     handleSortEnd,
     handleToggleLayout,
-    handleToggleEditMode
+    handleToggleEditMode,
+    handleChangeWidgetsPerRow
   };
 }

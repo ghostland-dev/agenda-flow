@@ -14,6 +14,7 @@ const Dashboard: React.FC<{ focusMode?: boolean }> = ({ focusMode = false }) => 
         isEditMode,
         widgetData,
         maximizedWidgetId,
+        widgetsPerRow,
         handleAddWidget,
         handleRemoveWidget,
         handleMaximizeWidget,
@@ -21,7 +22,8 @@ const Dashboard: React.FC<{ focusMode?: boolean }> = ({ focusMode = false }) => 
         handlePanelResize,
         handleSortEnd,
         handleToggleLayout,
-        handleToggleEditMode
+        handleToggleEditMode,
+        handleChangeWidgetsPerRow
       }) => (
         <div className="container py-6">
           <DashboardHeader 
@@ -33,10 +35,12 @@ const Dashboard: React.FC<{ focusMode?: boolean }> = ({ focusMode = false }) => 
             focusMode={focusMode}
             widgetConfigs={widgetConfigs}
             layout={layout}
+            widgetsPerRow={widgetsPerRow}
             isEditMode={isEditMode}
             onAddWidget={handleAddWidget}
             onToggleLayout={handleToggleLayout}
             onToggleEditMode={handleToggleEditMode}
+            onChangeWidgetsPerRow={handleChangeWidgetsPerRow}
           />
           
           {maximizedWidgetId ? (
