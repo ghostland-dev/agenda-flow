@@ -17,6 +17,7 @@ interface DashboardContentProps {
   onRefreshWidget?: (id: string) => void;
   onPanelResize: (id: string, size: number) => void;
   onSortEnd: (newOrder: WidgetConfig[]) => void;
+  widgetsPerRow?: number;
 }
 
 const DashboardContent: React.FC<DashboardContentProps> = ({
@@ -28,7 +29,8 @@ const DashboardContent: React.FC<DashboardContentProps> = ({
   onMaximizeWidget,
   onRefreshWidget,
   onPanelResize,
-  onSortEnd
+  onSortEnd,
+  widgetsPerRow = 3
 }) => {
   const isMobile = useIsMobile();
   const visibleWidgets = widgetConfigs.filter(w => w.isVisible);
@@ -84,6 +86,7 @@ const DashboardContent: React.FC<DashboardContentProps> = ({
       onMaximizeWidget={onMaximizeWidget}
       onRefreshWidget={onRefreshWidget}
       onPanelResize={onPanelResize}
+      widgetsPerRow={widgetsPerRow}
     />
   );
 };

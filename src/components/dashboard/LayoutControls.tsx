@@ -14,7 +14,7 @@ interface LayoutControlsProps {
 
 const LayoutControls: React.FC<LayoutControlsProps> = ({
   layout,
-  widgetsPerRow,
+  widgetsPerRow = 3,
   onToggleLayout,
   onChangeWidgetsPerRow
 }) => {

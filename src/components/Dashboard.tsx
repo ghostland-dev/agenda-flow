@@ -58,6 +58,7 @@ const Dashboard: React.FC<{ focusMode?: boolean }> = ({ focusMode = false }) => 
               widgetConfigs={widgetConfigs}
               isEditMode={isEditMode}
               widgetData={widgetData}
+              widgetsPerRow={widgetsPerRow}
               onRemoveWidget={handleRemoveWidget}
               onMaximizeWidget={handleMaximizeWidget}
               onRefreshWidget={handleRefreshWidget}
