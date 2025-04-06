@@ -17,7 +17,16 @@ export const DashboardManagerProvider: React.FC<DashboardManagerProviderProps> =
   // Use our specialized hooks
   const { widgetConfigs, handleRemoveWidget, handleAddWidget, handlePanelResize } = useWidgetConfigs(focusMode);
   const { stats, urgentTasks, todayTasks, overdueTasks, widgetData, handleRefreshWidget } = useTaskData();
-  const { isEditMode, layout, maximizedWidgetId, handleMaximizeWidget, handleToggleLayout, handleToggleEditMode } = useDashboardLayout();
+  const { 
+    isEditMode, 
+    layout, 
+    maximizedWidgetId, 
+    widgetsPerRow,
+    handleMaximizeWidget, 
+    handleToggleLayout, 
+    handleToggleEditMode,
+    handleChangeWidgetsPerRow
+  } = useDashboardLayout();
 
   // Combine all values and functions for the context
   const contextValue = {
@@ -28,6 +37,7 @@ export const DashboardManagerProvider: React.FC<DashboardManagerProviderProps> =
     overdueTasks,
     isEditMode,
     layout,
+    widgetsPerRow,
     maximizedWidget: maximizedWidgetId,
     widgetData,
     handleRemoveWidget,
@@ -36,7 +46,8 @@ export const DashboardManagerProvider: React.FC<DashboardManagerProviderProps> =
     handleRefreshWidget,
     handlePanelResize,
     toggleLayout: handleToggleLayout,
-    toggleEditMode: handleToggleEditMode
+    toggleEditMode: handleToggleEditMode,
+    changeWidgetsPerRow: handleChangeWidgetsPerRow
   };
 
   return (

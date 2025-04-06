@@ -15,6 +15,7 @@ interface DashboardLayoutProps {
   onMaximizeWidget: (id: string) => void;
   onRefreshWidget?: (id: string) => void;
   onPanelResize: (id: string, size: number) => void;
+  widgetsPerRow?: number;
 }
 
 const DashboardLayout: React.FC<DashboardLayoutProps> = ({
@@ -25,7 +26,8 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
   onRemoveWidget,
   onMaximizeWidget,
   onRefreshWidget,
-  onPanelResize
+  onPanelResize,
+  widgetsPerRow = 3
 }) => {
   const isMobile = useIsMobile();
   const visibleWidgets = widgetConfigs.filter(widget => widget.isVisible);
@@ -55,6 +57,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
         onMaximizeWidget={onMaximizeWidget}
         onRefreshWidget={onRefreshWidget}
         onPanelResize={onPanelResize}
+        widgetsPerRow={widgetsPerRow}
       />
     );
   } else {

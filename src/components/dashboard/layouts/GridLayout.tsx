@@ -11,6 +11,7 @@ interface GridLayoutProps {
   onMaximizeWidget: (id: string) => void;
   onRefreshWidget?: (id: string) => void;
   onPanelResize: (id: string, size: number) => void;
+  widgetsPerRow?: number;
 }
 
 const GridLayout: React.FC<GridLayoutProps> = ({
@@ -20,12 +21,13 @@ const GridLayout: React.FC<GridLayoutProps> = ({
   onRemoveWidget,
   onMaximizeWidget,
   onRefreshWidget,
-  onPanelResize
+  onPanelResize,
+  widgetsPerRow = 3
 }) => {
-  // Group widgets into rows of 3 (or fewer if necessary)
+  // Group widgets into rows based on widgetsPerRow
   const rows: WidgetConfig[][] = [];
-  for (let i = 0; i < widgetConfigs.length; i += 3) {
-    rows.push(widgetConfigs.slice(i, i + 3));
+  for (let i = 0; i < widgetConfigs.length; i += widgetsPerRow) {
+    rows.push(widgetConfigs.slice(i, i + widgetsPerRow));
   }
 
   return (

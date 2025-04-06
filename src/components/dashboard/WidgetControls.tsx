@@ -2,27 +2,32 @@
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { LayoutGrid, LayoutList, Plus, Settings, ChevronDown } from 'lucide-react';
+import { Plus, Settings, ChevronDown } from 'lucide-react';
 import { getAvailableWidgetTypes } from './widgetUtils';
 import { WidgetConfig } from './widgetUtils';
 import { Badge } from '@/components/ui/badge';
+import LayoutControls from './LayoutControls';
 
 interface WidgetControlsProps {
   widgetConfigs: WidgetConfig[];
   layout: 'grid' | 'list';
+  widgetsPerRow: number;
   isEditMode: boolean;
   onAddWidget: (type: string) => void;
   onToggleLayout: () => void;
   onToggleEditMode: () => void;
+  onChangeWidgetsPerRow: (count: number) => void;
 }
 
 const WidgetControls: React.FC<WidgetControlsProps> = ({
   widgetConfigs,
   layout,
+  widgetsPerRow,
   isEditMode,
   onAddWidget,
   onToggleLayout,
-  onToggleEditMode
+  onToggleEditMode,
+  onChangeWidgetsPerRow
 }) => {
   const availableWidgets = getAvailableWidgetTypes().filter(
     w => !widgetConfigs.some(config => config.type === w.type && config.isVisible)
@@ -32,24 +37,12 @@ const WidgetControls: React.FC<WidgetControlsProps> = ({
 
   return (
     <div className="flex flex-wrap items-center gap-2">
-      <Button
-        variant="outline"
-        size="sm"
-        onClick={onToggleLayout}
-        className="h-9 px-3"
-      >
-        {layout === 'grid' ? (
-          <>
-            <LayoutGrid className="h-4 w-4 mr-2" />
-            Grille
-          </>
-        ) : (
-          <>
-            <LayoutList className="h-4 w-4 mr-2" />
-            Liste
-          </>
-        )}
-      </Button>
+      <LayoutControls 
+        layout={layout}
+        widgetsPerRow={widgetsPerRow}
+        onToggleLayout={onToggleLayout}
+        onChangeWidgetsPerRow={onChangeWidgetsPerRow}
+      />
       
       <Popover>
         <PopoverTrigger asChild>

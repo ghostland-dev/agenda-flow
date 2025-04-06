@@ -11,6 +11,7 @@ interface DashboardManagerContextProps {
   overdueTasks: Task[];
   isEditMode: boolean;
   layout: 'grid' | 'list';
+  widgetsPerRow: number;
   maximizedWidget: string | null;
   widgetData: any;
   handleRemoveWidget: (id: string) => void;
@@ -20,6 +21,7 @@ interface DashboardManagerContextProps {
   handlePanelResize: (id: string, size: number) => void;
   toggleLayout: () => void;
   toggleEditMode: () => void;
+  changeWidgetsPerRow: (count: number) => void;
 }
 
 export const DashboardManagerContext = createContext<DashboardManagerContextProps | undefined>(undefined);

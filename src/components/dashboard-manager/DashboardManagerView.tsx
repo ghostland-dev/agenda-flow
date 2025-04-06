@@ -15,6 +15,7 @@ const DashboardManagerView: React.FC<DashboardManagerViewProps> = ({ searchQuery
     widgetConfigs, 
     isEditMode, 
     layout, 
+    widgetsPerRow,
     maximizedWidget,
     widgetData,
     handleRemoveWidget,
@@ -47,6 +48,7 @@ const DashboardManagerView: React.FC<DashboardManagerViewProps> = ({ searchQuery
         onMaximizeWidget={handleMaximizeWidget}
         onRefreshWidget={handleRefreshWidget}
         onPanelResize={handlePanelResize}
+        widgetsPerRow={widgetsPerRow}
       />
     </div>
   );

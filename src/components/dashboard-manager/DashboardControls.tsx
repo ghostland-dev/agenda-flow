@@ -7,20 +7,24 @@ const DashboardControls: React.FC = () => {
   const { 
     widgetConfigs, 
     layout, 
+    widgetsPerRow,
     isEditMode, 
     handleAddWidget, 
     toggleLayout, 
-    toggleEditMode 
+    toggleEditMode,
+    changeWidgetsPerRow
   } = useDashboardManager();
 
   return (
     <WidgetControls
       widgetConfigs={widgetConfigs}
       layout={layout}
+      widgetsPerRow={widgetsPerRow}
       isEditMode={isEditMode}
       onAddWidget={handleAddWidget}
       onToggleLayout={toggleLayout}
       onToggleEditMode={toggleEditMode}
+      onChangeWidgetsPerRow={changeWidgetsPerRow}
     />
   );
 };
