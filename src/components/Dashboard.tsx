@@ -8,7 +8,7 @@ interface DashboardProps {
 }
 
 const Dashboard: React.FC<DashboardProps> = ({ focusMode = false, searchQuery }) => {
-  return <DashboardManager focusMode={focusMode} />;
+  return <DashboardManager focusMode={focusMode} searchQuery={searchQuery} />;
 };
 
 export default Dashboard;
