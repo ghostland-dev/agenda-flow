@@ -46,11 +46,11 @@ const DashboardContent: React.FC<DashboardContentProps> = ({
         setList={onSortEnd as any}
         className={gridClassName}
         handle=".drag-handle"
+        animation={200}
       >
         {visibleWidgets.map(widget => (
-          <div key={widget.id} className="widget-item h-full" data-id={widget.id}>
+          <div key={widget.id} className="widget-item h-full min-h-[200px]" data-id={widget.id}>
             <DashboardWidget
-              key={widget.id}
               id={widget.id}
               title={widget.title}
               description={widget.description}

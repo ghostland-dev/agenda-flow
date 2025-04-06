@@ -20,6 +20,7 @@ export interface DashboardStateData {
   optimizedTasks: Task[];
   stats: any;
   widgetData: any;
+  maximizedWidgetId: string | null;
   handleAddWidget: (type: string) => void;
   handleRemoveWidget: (id: string) => void;
   handleMaximizeWidget: (id: string) => void;
@@ -62,6 +63,7 @@ const DashboardState: React.FC<DashboardStateProps> = ({ focusMode = false, chil
   const [overdueTasks, setOverdueTasks] = useState<Task[]>([]);
   const [optimizedTasks, setOptimizedTasks] = useState<Task[]>([]);
   const [stats, setStats] = useState<any>(null);
+  const [maximizedWidgetId, setMaximizedWidgetId] = useState<string | null>(null);
 
   // Charger les données pour tous les widgets
   const loadData = () => {
@@ -142,11 +144,22 @@ const DashboardState: React.FC<DashboardStateProps> = ({ focusMode = false, chil
           : widget
       )
     );
+    
+    // Si on supprime le widget maximisé, on désactive la maximisation
+    if (maximizedWidgetId === id) {
+      setMaximizedWidgetId(null);
+    }
   };
   
   const handleMaximizeWidget = (id: string) => {
-    // Implémenter la maximisation si nécessaire
-    console.log('Maximize widget', id);
+    setMaximizedWidgetId(prev => prev === id ? null : id);
+    
+    if (maximizedWidgetId !== id) {
+      toast({
+        title: "Widget agrandi",
+        description: "Cliquez sur 'Réduire' pour revenir à la vue normale",
+      });
+    }
   };
   
   const handleRefreshWidget = (id: string) => {
@@ -177,6 +190,11 @@ const DashboardState: React.FC<DashboardStateProps> = ({ focusMode = false, chil
   
   const handleToggleEditMode = () => {
     setIsEditMode(!isEditMode);
+    
+    // Désactiver la maximisation en entrant en mode édition
+    if (!isEditMode) {
+      setMaximizedWidgetId(null);
+    }
   };
   
   // Données à passer aux widgets
@@ -198,6 +216,7 @@ const DashboardState: React.FC<DashboardStateProps> = ({ focusMode = false, chil
     optimizedTasks,
     stats,
     widgetData,
+    maximizedWidgetId,
     handleAddWidget,
     handleRemoveWidget,
     handleMaximizeWidget,

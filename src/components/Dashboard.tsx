@@ -3,6 +3,7 @@ import React from 'react';
 import DashboardState from './dashboard/DashboardState';
 import DashboardHeader from './dashboard/DashboardHeader';
 import DashboardContent from './dashboard/DashboardContent';
+import MaximizedWidget from './dashboard/MaximizedWidget';
 
 const Dashboard: React.FC<{ focusMode?: boolean }> = ({ focusMode = false }) => {
   return (
@@ -12,6 +13,7 @@ const Dashboard: React.FC<{ focusMode?: boolean }> = ({ focusMode = false }) => 
         widgetConfigs,
         isEditMode,
         widgetData,
+        maximizedWidgetId,
         handleAddWidget,
         handleRemoveWidget,
         handleMaximizeWidget,
@@ -37,17 +39,28 @@ const Dashboard: React.FC<{ focusMode?: boolean }> = ({ focusMode = false }) => 
             onToggleEditMode={handleToggleEditMode}
           />
           
-          <DashboardContent 
-            layout={layout}
-            widgetConfigs={widgetConfigs}
-            isEditMode={isEditMode}
-            widgetData={widgetData}
-            onRemoveWidget={handleRemoveWidget}
-            onMaximizeWidget={handleMaximizeWidget}
-            onRefreshWidget={handleRefreshWidget}
-            onPanelResize={handlePanelResize}
-            onSortEnd={handleSortEnd}
-          />
+          {maximizedWidgetId ? (
+            <MaximizedWidget 
+              widgetId={maximizedWidgetId}
+              widgetConfigs={widgetConfigs}
+              widgetData={widgetData}
+              onRemoveWidget={handleRemoveWidget}
+              onMaximizeWidget={handleMaximizeWidget}
+              onRefreshWidget={handleRefreshWidget}
+            />
+          ) : (
+            <DashboardContent 
+              layout={layout}
+              widgetConfigs={widgetConfigs}
+              isEditMode={isEditMode}
+              widgetData={widgetData}
+              onRemoveWidget={handleRemoveWidget}
+              onMaximizeWidget={handleMaximizeWidget}
+              onRefreshWidget={handleRefreshWidget}
+              onPanelResize={handlePanelResize}
+              onSortEnd={handleSortEnd}
+            />
+          )}
         </div>
       )}
     </DashboardState>

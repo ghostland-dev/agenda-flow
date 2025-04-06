@@ -49,7 +49,9 @@ const DashboardWidget: React.FC<WidgetProps> = ({
   };
 
   return (
-    <Card className={cn("h-full transition-all hover:border-primary/20 overflow-hidden", className)}>
+    <Card className={cn("h-full transition-all duration-300 hover:border-primary/20 overflow-hidden", 
+      isMaximized && "fixed top-0 left-0 right-0 bottom-0 z-50 m-4 rounded-lg shadow-2xl",
+      className)}>
       <CardHeader className="p-4 pb-2 flex flex-row items-center justify-between space-y-0 bg-card/60">
         <div className="space-y-1 flex items-center">
           <Move className="h-4 w-4 mr-2 text-muted-foreground drag-handle cursor-move" />
