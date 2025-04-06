@@ -8,7 +8,8 @@ import {
   TaskUrgency, 
   TaskSize, 
   TaskCategory, 
-  TaskPeriod 
+  TaskPeriod,
+  TaskTemplate
 } from '@/types/task';
 import TaskService from '@/services/taskService';
 import { Button } from '@/components/ui/button';
@@ -32,11 +33,12 @@ import { fr } from 'date-fns/locale';
 import { CalendarIcon, Plus, Trash } from 'lucide-react';
 
 interface TaskFormProps {
-  task?: Task;
-  onSuccess?: () => void;
+  task?: Task | TaskTemplate;
+  onSuccess?: (task: Task | TaskTemplate) => void;
+  isTemplate?: boolean;
 }
 
-const TaskForm: React.FC<TaskFormProps> = ({ task, onSuccess }) => {
+const TaskForm: React.FC<TaskFormProps> = ({ task, onSuccess, isTemplate = false }) => {
   const { toast } = useToast();
   const navigate = useNavigate();
   const isEditing = !!task;
@@ -70,8 +72,10 @@ const TaskForm: React.FC<TaskFormProps> = ({ task, onSuccess }) => {
     }
     
     try {
-      if (isEditing && task) {
-        TaskService.updateTask(task.id, {
+      if (isTemplate) {
+        // Handle template creation/update
+        const templateData = {
+          id: task?.id || '',
           title,
           description,
           priority,
@@ -79,62 +83,100 @@ const TaskForm: React.FC<TaskFormProps> = ({ task, onSuccess }) => {
           size,
           category,
           period,
-          dueDate: dueDate || null,
+          tags,
           subTasks: subTasks.map(st => ({
             id: st.id || '',
             title: st.title,
-            completed: st.completed,
-            createdAt: new Date()
+            completed: false,
           })),
-          tags,
           mentalLoad,
-          energyRequired,
-        });
+          energyRequired
+        };
+        
+        const savedTemplate = TaskService.saveTemplate(templateData);
         
         toast({
-          title: 'Succès',
-          description: 'Tâche mise à jour avec succès',
-        });
-      } else {
-        TaskService.createTask({
-          title,
-          description,
-          priority,
-          urgency,
-          size,
-          category,
-          period,
-          status: 'pending',
-          dueDate: dueDate || null,
-          subTasks: subTasks.map(st => ({
-            id: '',
-            title: st.title,
-            completed: st.completed,
-            createdAt: new Date()
-          })),
-          tags,
-          completed: false,
-          completedAt: null,
-          mentalLoad,
-          energyRequired,
+          title: isEditing ? 'Modèle mis à jour' : 'Modèle créé',
+          description: isEditing 
+            ? 'Le modèle a été mis à jour avec succès' 
+            : 'Nouveau modèle créé avec succès'
         });
         
-        toast({
-          title: 'Succès',
-          description: 'Nouvelle tâche créée avec succès',
-        });
-      }
-      
-      if (onSuccess) {
-        onSuccess();
+        if (onSuccess) {
+          onSuccess(savedTemplate);
+        }
       } else {
-        navigate('/tasks');
+        // Handle regular task creation/update
+        if (isEditing && task) {
+          const updatedTask = TaskService.updateTask(task.id, {
+            title,
+            description,
+            priority,
+            urgency,
+            size,
+            category,
+            period,
+            dueDate: dueDate || null,
+            subTasks: subTasks.map(st => ({
+              id: st.id || '',
+              title: st.title,
+              completed: st.completed,
+              createdAt: new Date()
+            })),
+            tags,
+            mentalLoad,
+            energyRequired,
+          });
+          
+          toast({
+            title: 'Succès',
+            description: 'Tâche mise à jour avec succès',
+          });
+          
+          if (onSuccess && updatedTask) {
+            onSuccess(updatedTask);
+          }
+        } else {
+          const newTask = TaskService.createTask({
+            title,
+            description,
+            priority,
+            urgency,
+            size,
+            category,
+            period,
+            status: 'pending',
+            dueDate: dueDate || null,
+            subTasks: subTasks.map(st => ({
+              id: '',
+              title: st.title,
+              completed: st.completed,
+              createdAt: new Date()
+            })),
+            tags,
+            completed: false,
+            completedAt: null,
+            mentalLoad,
+            energyRequired,
+          });
+          
+          toast({
+            title: 'Succès',
+            description: 'Nouvelle tâche créée avec succès',
+          });
+          
+          if (onSuccess) {
+            onSuccess(newTask);
+          } else {
+            navigate('/tasks');
+          }
+        }
       }
     } catch (error) {
-      console.error('Erreur lors de la sauvegarde de la tâche:', error);
+      console.error('Erreur lors de la sauvegarde:', error);
       toast({
         title: 'Erreur',
-        description: 'Une erreur est survenue lors de la sauvegarde de la tâche',
+        description: 'Une erreur est survenue lors de la sauvegarde',
         variant: 'destructive',
       });
     }
@@ -254,35 +296,37 @@ const TaskForm: React.FC<TaskFormProps> = ({ task, onSuccess }) => {
             </Select>
           </div>
           
-          <div className="space-y-2">
-            <Label htmlFor="due-date">Date d'échéance</Label>
-            <Popover>
-              <PopoverTrigger asChild>
-                <Button
-                  variant="outline"
-                  className={cn(
-                    "w-full justify-start text-left font-normal",
-                    !dueDate && "text-muted-foreground"
-                  )}
-                >
-                  <CalendarIcon className="mr-2 h-4 w-4" />
-                  {dueDate ? (
-                    format(dueDate, "PPP", { locale: fr })
-                  ) : (
-                    <span>Sélectionner une date</span>
-                  )}
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent className="w-auto p-0">
-                <Calendar
-                  mode="single"
-                  selected={dueDate}
-                  onSelect={setDueDate}
-                  initialFocus
-                />
-              </PopoverContent>
-            </Popover>
-          </div>
+          {!isTemplate && (
+            <div className="space-y-2">
+              <Label htmlFor="due-date">Date d'échéance</Label>
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button
+                    variant="outline"
+                    className={cn(
+                      "w-full justify-start text-left font-normal",
+                      !dueDate && "text-muted-foreground"
+                    )}
+                  >
+                    <CalendarIcon className="mr-2 h-4 w-4" />
+                    {dueDate ? (
+                      format(dueDate, "PPP", { locale: fr })
+                    ) : (
+                      <span>Sélectionner une date</span>
+                    )}
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto p-0">
+                  <Calendar
+                    mode="single"
+                    selected={dueDate}
+                    onSelect={setDueDate}
+                    initialFocus
+                  />
+                </PopoverContent>
+              </Popover>
+            </div>
+          )}
         </div>
         
         <div className="space-y-2">
@@ -354,7 +398,7 @@ const TaskForm: React.FC<TaskFormProps> = ({ task, onSuccess }) => {
       
       <div className="flex justify-end gap-3">
         <Button type="submit">
-          {isEditing ? 'Mettre à jour' : 'Créer'}
+          {isEditing ? 'Mettre à jour' : isTemplate ? 'Créer le modèle' : 'Créer'}
         </Button>
       </div>
     </form>

@@ -1,46 +1,71 @@
 
-import React from 'react';
-import { 
-  Calendar, 
-  CheckSquare, 
-  Clock, 
-  Filter, 
-  Home, 
-  List, 
-  PieChart, 
-  Settings, 
-  Star, 
-  Tag 
-} from 'lucide-react';
-import SidebarLink from './SidebarLink';
-import { SidebarMenu } from '@/components/ui/sidebar';
+// Update SidebarNavLinks to include the new pages
 
-// Navigation links configuration
-const navLinks = [
-  { title: 'Tableau de bord', path: '/', icon: Home },
-  { title: 'Toutes les tâches', path: '/tasks', icon: List },
-  { title: 'Urgentes', path: '/tasks/urgent', icon: Clock },
-  { title: 'Importantes', path: '/tasks/important', icon: Star },
-  { title: 'Aujourd\'hui', path: '/tasks/today', icon: Calendar },
-  { title: 'Cette semaine', path: '/tasks/week', icon: CheckSquare },
-  { title: 'Catégories', path: '/categories', icon: Tag },
-  { title: 'Statistiques', path: '/stats', icon: PieChart },
-  { title: 'Filtres', path: '/filters', icon: Filter },
-  { title: 'Paramètres', path: '/settings', icon: Settings },
-];
+import React from 'react';
+import { NavLink } from 'react-router-dom';
+import { Calendar, LayoutDashboard, CheckSquare, BarChart2, BookTemplate, Timer } from 'lucide-react';
+import { cn } from '@/lib/utils';
+import { useSidebar } from '@/components/ui/sidebar';
 
 const SidebarNavLinks: React.FC = () => {
+  const { isOpen } = useSidebar();
+  
+  const links = [
+    {
+      href: '/',
+      label: 'Tableau de bord',
+      icon: <LayoutDashboard className="h-5 w-5" />
+    },
+    {
+      href: '/tasks',
+      label: 'Tâches',
+      icon: <CheckSquare className="h-5 w-5" />
+    },
+    {
+      href: '/calendar',
+      label: 'Calendrier',
+      icon: <Calendar className="h-5 w-5" />
+    },
+    {
+      href: '/focus',
+      label: 'Mode Focus',
+      icon: <Timer className="h-5 w-5" />
+    },
+    {
+      href: '/templates',
+      label: 'Modèles',
+      icon: <BookTemplate className="h-5 w-5" />
+    },
+    {
+      href: '/statistics',
+      label: 'Statistiques',
+      icon: <BarChart2 className="h-5 w-5" />
+    },
+  ];
+
   return (
-    <SidebarMenu>
-      {navLinks.map((link) => (
-        <SidebarLink 
-          key={link.path} 
-          title={link.title} 
-          path={link.path} 
-          icon={link.icon} 
-        />
+    <nav className="space-y-1">
+      {links.map((link) => (
+        <NavLink
+          key={link.href}
+          to={link.href}
+          className={({ isActive }) =>
+            cn(
+              'flex items-center gap-3 rounded-md px-3 py-2 text-sm transition-colors',
+              isActive
+                ? 'bg-primary/10 text-primary'
+                : 'text-muted-foreground hover:bg-accent hover:text-accent-foreground'
+            )
+          }
+          end={link.href === '/'}
+        >
+          {link.icon}
+          <span className={cn(isOpen ? 'opacity-100' : 'opacity-0 md:opacity-100')}>
+            {link.label}
+          </span>
+        </NavLink>
       ))}
-    </SidebarMenu>
+    </nav>
   );
 };
 
