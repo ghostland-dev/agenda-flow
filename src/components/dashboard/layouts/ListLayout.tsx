@@ -24,10 +24,14 @@ const ListLayout: React.FC<ListLayoutProps> = ({
   onRefreshWidget,
   onPanelResize
 }) => {
+  // Calculer une taille minimale basée sur le nombre de widgets
+  const widgetCount = widgetConfigs.length;
+  const minSize = Math.max(10, Math.floor(100 / (widgetCount * 2))); // Au moins 10% de hauteur
+
   return (
     <ResizablePanelGroup 
       direction="vertical" 
-      className="min-h-[200px] w-full rounded-lg border"
+      className="min-h-[500px] w-full rounded-lg border"
     >
       {widgetConfigs.map((widget, index) => (
         <React.Fragment key={widget.id}>
@@ -36,26 +40,30 @@ const ListLayout: React.FC<ListLayoutProps> = ({
           )}
           <ResizablePanel
             defaultSize={widget.size || Math.floor(100 / widgetConfigs.length)}
-            minSize={15}
+            minSize={minSize}
+            collapsible={false}
             onResize={(size) => onPanelResize(widget.id, size)}
+            className="min-h-[200px]"
           >
-            <DashboardWidget
-              id={widget.id}
-              title={widget.title}
-              description={widget.description}
-              onRemove={onRemoveWidget}
-              onMaximize={onMaximizeWidget}
-              onRefresh={onRefreshWidget}
-              className={isEditMode ? "border-dashed border-2 h-full" : "h-full"}
-            >
-              <WidgetContent
-                type={widget.type}
-                data={{
-                  tasks: widgetData[`${widget.type}Tasks`],
-                  stats: widgetData.stats
-                }}
-              />
-            </DashboardWidget>
+            <div className="h-full w-full p-1">
+              <DashboardWidget
+                id={widget.id}
+                title={widget.title}
+                description={widget.description}
+                onRemove={onRemoveWidget}
+                onMaximize={onMaximizeWidget}
+                onRefresh={onRefreshWidget}
+                className={isEditMode ? "border-dashed border-2 h-full" : "h-full"}
+              >
+                <WidgetContent
+                  type={widget.type}
+                  data={{
+                    tasks: widgetData[`${widget.type}Tasks`],
+                    stats: widgetData.stats
+                  }}
+                />
+              </DashboardWidget>
+            </div>
           </ResizablePanel>
         </React.Fragment>
       ))}

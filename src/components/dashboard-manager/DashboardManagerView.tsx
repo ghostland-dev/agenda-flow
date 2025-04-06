@@ -45,17 +45,19 @@ const DashboardManagerView: React.FC<DashboardManagerViewProps> = ({ searchQuery
         <DashboardControls />
       </div>
       
-      <DashboardLayout
-        layout={layout}
-        widgetConfigs={displayWidgets}
-        isEditMode={isEditMode}
-        widgetData={widgetData}
-        onRemoveWidget={handleRemoveWidget}
-        onMaximizeWidget={handleMaximizeWidget}
-        onRefreshWidget={handleRefreshWidget}
-        onPanelResize={handlePanelResize}
-        widgetsPerRow={widgetsPerRow || 3}
-      />
+      <div className={layout === 'list' ? 'h-[calc(100vh-180px)]' : ''}>
+        <DashboardLayout
+          layout={layout}
+          widgetConfigs={displayWidgets}
+          isEditMode={isEditMode}
+          widgetData={widgetData}
+          onRemoveWidget={handleRemoveWidget}
+          onMaximizeWidget={handleMaximizeWidget}
+          onRefreshWidget={handleRefreshWidget}
+          onPanelResize={handlePanelResize}
+          widgetsPerRow={widgetsPerRow || 3}
+        />
+      </div>
     </div>
   );
 };
