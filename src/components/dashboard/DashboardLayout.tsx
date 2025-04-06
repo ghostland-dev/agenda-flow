@@ -121,6 +121,9 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
       >
         {visibleWidgets.map((widget, index) => (
           <React.Fragment key={widget.id}>
+            {index > 0 && (
+              <ResizableHandle withHandle />
+            )}
             <ResizablePanel
               defaultSize={widget.size || Math.floor(100 / visibleWidgets.length)}
               minSize={15}
@@ -144,9 +147,6 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
                 />
               </DashboardWidget>
             </ResizablePanel>
-            {index < visibleWidgets.length - 1 && (
-              <ResizableHandle withHandle />
-            )}
           </React.Fragment>
         ))}
       </ResizablePanelGroup>
