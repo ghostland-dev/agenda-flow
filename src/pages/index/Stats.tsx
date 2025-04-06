@@ -12,9 +12,14 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { format, subMonths, subWeeks, isThisWeek, isThisMonth, parseISO } from 'date-fns';
 import { fr } from 'date-fns/locale';
 
+interface CompletedTasksOverTime {
+  months: any[];
+  weeks: any[];
+}
+
 const Stats: React.FC = () => {
   const [stats, setStats] = useState<any>(null);
-  const [completedTasksOverTime, setCompletedTasksOverTime] = useState<any[]>([]);
+  const [completedTasksOverTime, setCompletedTasksOverTime] = useState<CompletedTasksOverTime>({ months: [], weeks: [] });
   const [tasksPerCategory, setTasksPerCategory] = useState<any[]>([]);
   const [tasksPerPriority, setTasksPerPriority] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);

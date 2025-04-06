@@ -1,4 +1,3 @@
-
 import { Task, TaskFilter, TaskPriority, TaskUrgency, TaskSize, TaskCategory, TaskPeriod, TaskStatus, SubTask } from '../types/task';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -336,7 +335,7 @@ export const TaskService = {
   getTags: (): string[] => {
     const tasks = initializeLocalStorage();
     const allTags = tasks.flatMap(task => task.tags);
-    return [...new Set(allTags)];
+    return [...new Set(allTags)].filter((tag): tag is string => typeof tag === 'string');
   },
   
   getTaskStats: () => {
@@ -513,7 +512,6 @@ export const TaskService = {
     }
   },
   
-  // Calculer un score de priorité basé sur les différents critères
   calculatePriorityScore: (task: Task): number => {
     const priorityValues = { high: 10, medium: 5, low: 1 };
     const urgencyValues = { immediate: 10, soon: 5, later: 1 };
