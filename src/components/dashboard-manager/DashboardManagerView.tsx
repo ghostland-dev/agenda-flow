@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { useDashboardManager } from './DashboardManagerProvider';
+import { useDashboardManager } from '@/contexts/dashboard-manager-context';
 import MaximizedWidget from './MaximizedWidget';
 import DashboardControls from './DashboardControls';
 import DashboardLayout from '../dashboard/DashboardLayout';

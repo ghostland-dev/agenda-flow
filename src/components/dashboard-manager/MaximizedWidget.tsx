@@ -2,7 +2,7 @@
 import React from 'react';
 import DashboardWidget from '../dashboard/DashboardWidget';
 import WidgetContent from '../dashboard/WidgetContent';
-import { useDashboardManager } from './DashboardManagerProvider';
+import { useDashboardManager } from '@/contexts/dashboard-manager-context';
 
 const MaximizedWidget: React.FC = () => {
   const { 

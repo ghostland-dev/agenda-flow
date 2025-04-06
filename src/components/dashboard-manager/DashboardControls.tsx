@@ -1,7 +1,7 @@
 
 import React from 'react';
 import WidgetControls from '../dashboard/WidgetControls';
-import { useDashboardManager } from './DashboardManagerProvider';
+import { useDashboardManager } from '@/contexts/dashboard-manager-context';
 
 const DashboardControls: React.FC = () => {
   const { 
