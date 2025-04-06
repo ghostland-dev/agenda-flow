@@ -1,24 +1,52 @@
-import React, { useState, useEffect } from 'react';
+
+import React, { useState, useEffect, createContext, useContext } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import TaskService from '@/services/taskService';
 import { Task } from '@/types/task';
-import DashboardWidget from './dashboard/DashboardWidget';
-import WidgetContent from './dashboard/WidgetContent';
-import WidgetControls from './dashboard/WidgetControls';
-import DashboardLayout from './dashboard/DashboardLayout';
 import { 
   WidgetConfig, 
   getWidgetTitle, 
   getWidgetDescription, 
   getDefaultWidgets 
-} from './dashboard/widgetUtils';
+} from '../dashboard/widgetUtils';
 
-interface DashboardManagerProps {
-  focusMode?: boolean;
-  searchQuery?: string;
+interface DashboardManagerContextProps {
+  widgetConfigs: WidgetConfig[];
+  stats: any;
+  urgentTasks: Task[];
+  todayTasks: Task[];
+  overdueTasks: Task[];
+  isEditMode: boolean;
+  layout: 'grid' | 'list';
+  maximizedWidget: string | null;
+  widgetData: any;
+  handleRemoveWidget: (id: string) => void;
+  handleAddWidget: (type: string) => void;
+  handleMaximizeWidget: (id: string) => void;
+  handlePanelResize: (id: string, size: number) => void;
+  toggleLayout: () => void;
+  toggleEditMode: () => void;
 }
 
-const DashboardManager: React.FC<DashboardManagerProps> = ({ focusMode = false, searchQuery }) => {
+const DashboardManagerContext = createContext<DashboardManagerContextProps | undefined>(undefined);
+
+export const useDashboardManager = () => {
+  const context = useContext(DashboardManagerContext);
+  if (!context) {
+    throw new Error('useDashboardManager must be used within a DashboardManagerProvider');
+  }
+  return context;
+};
+
+interface DashboardManagerProviderProps {
+  focusMode?: boolean;
+  children: React.ReactNode;
+}
+
+export const DashboardManagerProvider: React.FC<DashboardManagerProviderProps> = ({ 
+  focusMode = false, 
+  children 
+}) => {
   const [widgetConfigs, setWidgetConfigs] = useState<WidgetConfig[]>(() => {
     try {
       const savedWidgets = localStorage.getItem('dashboard-widgets');
@@ -41,7 +69,7 @@ const DashboardManager: React.FC<DashboardManagerProps> = ({ focusMode = false, 
   const [layout, setLayout] = useState<'grid' | 'list'>(() => {
     try {
       const savedLayout = localStorage.getItem('dashboard-layout');
-      return (savedLayout === 'list' ? 'list' : 'grid') as 'grid' | 'list';
+      return savedLayout === 'list' ? 'list' : 'grid';
     } catch (error) {
       console.error('Error loading layout:', error);
       return 'grid';
@@ -170,41 +198,6 @@ const DashboardManager: React.FC<DashboardManagerProps> = ({ focusMode = false, 
     setIsEditMode(!isEditMode);
   };
 
-  if (!stats) {
-    return <div className="p-8 text-center">Chargement des données...</div>;
-  }
-
-  if (maximizedWidget) {
-    const widget = widgetConfigs.find(w => w.id === maximizedWidget && w.isVisible);
-    if (widget) {
-      return (
-        <div className="p-4">
-          <DashboardWidget
-            id={widget.id}
-            title={widget.title}
-            description={widget.description}
-            onRemove={handleRemoveWidget}
-            onMaximize={handleMaximizeWidget}
-            isMaximized={true}
-            className="h-[calc(100vh-160px)]"
-          >
-            <WidgetContent
-              type={widget.type}
-              data={{
-                tasks: 
-                  widget.type === 'today-tasks' ? todayTasks :
-                  widget.type === 'urgent-tasks' ? urgentTasks :
-                  widget.type === 'overdue-tasks' ? overdueTasks : 
-                  undefined,
-                stats
-              }}
-            />
-          </DashboardWidget>
-        </div>
-      );
-    }
-  }
-
   const widgetData = {
     stats,
     'today-tasksTasks': todayTasks,
@@ -212,31 +205,27 @@ const DashboardManager: React.FC<DashboardManagerProps> = ({ focusMode = false, 
     'overdue-tasksTasks': overdueTasks
   };
 
+  const value = {
+    widgetConfigs,
+    stats,
+    urgentTasks,
+    todayTasks,
+    overdueTasks,
+    isEditMode,
+    layout,
+    maximizedWidget,
+    widgetData,
+    handleRemoveWidget,
+    handleAddWidget,
+    handleMaximizeWidget,
+    handlePanelResize,
+    toggleLayout,
+    toggleEditMode
+  };
+
   return (
-    <div className="p-4 space-y-4">
-      <div className="flex justify-between items-center">
-        <h1 className="text-xl font-bold">Tableau de bord</h1>
-        <WidgetControls
-          widgetConfigs={widgetConfigs}
-          layout={layout}
-          isEditMode={isEditMode}
-          onAddWidget={handleAddWidget}
-          onToggleLayout={toggleLayout}
-          onToggleEditMode={toggleEditMode}
-        />
-      </div>
-      
-      <DashboardLayout
-        layout={layout}
-        widgetConfigs={widgetConfigs}
-        isEditMode={isEditMode}
-        widgetData={widgetData}
-        onRemoveWidget={handleRemoveWidget}
-        onMaximizeWidget={handleMaximizeWidget}
-        onPanelResize={handlePanelResize}
-      />
-    </div>
+    <DashboardManagerContext.Provider value={value}>
+      {children}
+    </DashboardManagerContext.Provider>
   );
 };
-
-export default DashboardManager;
