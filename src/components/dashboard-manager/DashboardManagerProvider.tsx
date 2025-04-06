@@ -14,12 +14,12 @@ export const DashboardManagerProvider: React.FC<DashboardManagerProviderProps> =
   focusMode = false, 
   children 
 }) => {
-  // Utiliser nos hooks personnalisés pour organiser la logique
+  // Use our specialized hooks
   const { widgetConfigs, handleRemoveWidget, handleAddWidget, handlePanelResize } = useWidgetConfigs(focusMode);
-  const { stats, urgentTasks, todayTasks, overdueTasks, widgetData } = useTaskData();
-  const { isEditMode, layout, maximizedWidget, handleMaximizeWidget, toggleLayout, toggleEditMode } = useDashboardLayout();
+  const { stats, urgentTasks, todayTasks, overdueTasks, widgetData, handleRefreshWidget } = useTaskData();
+  const { isEditMode, layout, maximizedWidgetId, handleMaximizeWidget, handleToggleLayout, handleToggleEditMode } = useDashboardLayout();
 
-  // Combiner toutes les valeurs et fonctions pour le contexte
+  // Combine all values and functions for the context
   const contextValue = {
     widgetConfigs,
     stats,
@@ -28,14 +28,15 @@ export const DashboardManagerProvider: React.FC<DashboardManagerProviderProps> =
     overdueTasks,
     isEditMode,
     layout,
-    maximizedWidget,
+    maximizedWidget: maximizedWidgetId,
     widgetData,
     handleRemoveWidget,
     handleAddWidget,
     handleMaximizeWidget,
+    handleRefreshWidget,
     handlePanelResize,
-    toggleLayout,
-    toggleEditMode
+    toggleLayout: handleToggleLayout,
+    toggleEditMode: handleToggleEditMode
   };
 
   return (

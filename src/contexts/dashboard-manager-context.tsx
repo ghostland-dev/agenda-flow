@@ -16,6 +16,7 @@ interface DashboardManagerContextProps {
   handleRemoveWidget: (id: string) => void;
   handleAddWidget: (type: string) => void;
   handleMaximizeWidget: (id: string) => void;
+  handleRefreshWidget?: (id: string) => void;
   handlePanelResize: (id: string, size: number) => void;
   toggleLayout: () => void;
   toggleEditMode: () => void;

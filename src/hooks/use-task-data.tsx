@@ -1,67 +1,83 @@
 
 import { useState, useEffect } from 'react';
-import TaskService from '@/services/taskService';
 import { Task } from '@/types/task';
+import TaskService from '@/services/taskService';
+import { useToast } from '@/hooks/use-toast';
 
 export function useTaskData() {
-  const [stats, setStats] = useState<any>(null);
-  const [urgentTasks, setUrgentTasks] = useState<Task[]>([]);
   const [todayTasks, setTodayTasks] = useState<Task[]>([]);
+  const [urgentTasks, setUrgentTasks] = useState<Task[]>([]);
   const [overdueTasks, setOverdueTasks] = useState<Task[]>([]);
-  
-  useEffect(() => {
-    loadTaskData();
-  }, []);
-  
-  const loadTaskData = () => {
-    const taskStats = TaskService.getTaskStats();
-    setStats(taskStats);
-    
-    const urgent = TaskService.getTasks({
-      urgencies: ['immediate'],
-      sortBy: 'dueDate',
-      sortDirection: 'asc',
-    }).slice(0, 5);
-    setUrgentTasks(urgent);
-    
+  const [optimizedTasks, setOptimizedTasks] = useState<Task[]>([]);
+  const [stats, setStats] = useState<any>(null);
+  const { toast } = useToast();
+
+  // Load data for all widgets
+  const loadData = () => {
     const today = new Date();
-    const tomorrow = new Date(today);
-    tomorrow.setDate(tomorrow.getDate() + 1);
-    tomorrow.setHours(0, 0, 0, 0);
-    
     today.setHours(0, 0, 0, 0);
     
-    const todayTasksList = TaskService.getTasks({
-      dueAfterDate: today,
-      dueBeforeDate: tomorrow,
-      sortBy: 'priority',
-      sortDirection: 'desc',
-    }).slice(0, 5);
-    setTodayTasks(todayTasksList);
+    const tomorrow = new Date(today);
+    tomorrow.setDate(tomorrow.getDate() + 1);
     
-    const overdue = TaskService.getTasks({
-      dueBeforeDate: today,
-      statuses: ['pending', 'in-progress'],
-      sortBy: 'dueDate',
-      sortDirection: 'asc',
-    }).slice(0, 5);
-    setOverdueTasks(overdue);
+    // Today's tasks
+    setTodayTasks(
+      TaskService.getTasks({
+        dueAfterDate: today,
+        dueBeforeDate: tomorrow
+      })
+    );
+    
+    // Urgent tasks
+    setUrgentTasks(
+      TaskService.getTasks({
+        urgencies: ['immediate']
+      })
+    );
+    
+    // Overdue tasks
+    setOverdueTasks(
+      TaskService.getTasks({
+        dueBeforeDate: today,
+        statuses: ['pending', 'in-progress']
+      })
+    );
+    
+    // Optimized tasks
+    setOptimizedTasks(TaskService.optimizeTasks());
+    
+    // Statistics
+    setStats(TaskService.getTaskStats());
   };
 
-  // Groupe toutes les données pour les widgets
+  useEffect(() => {
+    loadData();
+  }, []);
+
+  const handleRefreshWidget = (id: string) => {
+    loadData();
+    toast({
+      title: "Widget actualisé",
+      description: "Les données du widget ont été mises à jour",
+    });
+  };
+
+  // Data to pass to widgets
   const widgetData = {
-    stats,
     'today-tasksTasks': todayTasks,
     'urgent-tasksTasks': urgentTasks,
-    'overdue-tasksTasks': overdueTasks
+    'overdue-tasksTasks': overdueTasks,
+    'task-optimizerTasks': optimizedTasks,
+    stats
   };
 
   return {
-    stats,
-    urgentTasks,
     todayTasks,
+    urgentTasks,
     overdueTasks,
+    optimizedTasks,
+    stats,
     widgetData,
-    refreshData: loadTaskData
+    handleRefreshWidget
   };
 }

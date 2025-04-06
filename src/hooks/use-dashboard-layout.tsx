@@ -2,41 +2,51 @@
 import { useState, useEffect } from 'react';
 
 export function useDashboardLayout() {
-  const [isEditMode, setIsEditMode] = useState(false);
   const [layout, setLayout] = useState<'grid' | 'list'>(() => {
     try {
       const savedLayout = localStorage.getItem('dashboard-layout');
-      return savedLayout === 'list' ? 'list' : 'grid';
+      // Check if savedLayout exists and is a valid value
+      if (savedLayout && (savedLayout === 'grid' || savedLayout === 'list')) {
+        return savedLayout as 'grid' | 'list';
+      }
+      return 'grid'; // Default value if not valid
     } catch (error) {
-      console.error('Error loading layout:', error);
-      return 'grid';
+      console.error('Error loading layout from localStorage:', error);
+      return 'grid'; // Default to grid on error
     }
   });
-  const [maximizedWidget, setMaximizedWidget] = useState<string | null>(null);
   
-  // Persist layout when it changes
+  const [isEditMode, setIsEditMode] = useState(false);
+  const [maximizedWidgetId, setMaximizedWidgetId] = useState<string | null>(null);
+  
+  // Save layout
   useEffect(() => {
     localStorage.setItem('dashboard-layout', layout);
   }, [layout]);
   
   const handleMaximizeWidget = (id: string) => {
-    setMaximizedWidget(maximizedWidget === id ? null : id);
+    setMaximizedWidgetId(prev => prev === id ? null : id);
   };
-
-  const toggleLayout = () => {
-    setLayout(layout === 'grid' ? 'list' : 'grid');
+  
+  const handleToggleLayout = () => {
+    setLayout(prev => prev === 'grid' ? 'list' : 'grid');
   };
-
-  const toggleEditMode = () => {
+  
+  const handleToggleEditMode = () => {
     setIsEditMode(!isEditMode);
+    
+    // Disable maximization when entering edit mode
+    if (!isEditMode) {
+      setMaximizedWidgetId(null);
+    }
   };
 
   return {
-    isEditMode,
     layout,
-    maximizedWidget,
+    isEditMode,
+    maximizedWidgetId,
     handleMaximizeWidget,
-    toggleLayout,
-    toggleEditMode
+    handleToggleLayout,
+    handleToggleEditMode
   };
 }
