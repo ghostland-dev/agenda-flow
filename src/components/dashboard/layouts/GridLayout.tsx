@@ -1,9 +1,7 @@
 
 import React from 'react';
-import { ResizablePanelGroup, ResizablePanel, ResizableHandle } from '@/components/ui/resizable';
-import DashboardWidget from '../DashboardWidget';
-import WidgetContent from '../WidgetContent';
 import { WidgetConfig } from '../widgetUtils';
+import GridRow from './GridRow';
 
 interface GridLayoutProps {
   widgetConfigs: WidgetConfig[];
@@ -24,51 +22,25 @@ const GridLayout: React.FC<GridLayoutProps> = ({
   onRefreshWidget,
   onPanelResize
 }) => {
-  // Diviser les widgets en rangées de 3 (ou moins si nécessaire)
-  const rows = [];
+  // Group widgets into rows of 3 (or fewer if necessary)
+  const rows: WidgetConfig[][] = [];
   for (let i = 0; i < widgetConfigs.length; i += 3) {
     rows.push(widgetConfigs.slice(i, i + 3));
   }
 
   return (
     <div className="space-y-4">
-      {rows.map((row, rowIndex) => (
-        <ResizablePanelGroup 
+      {rows.map((rowWidgets, rowIndex) => (
+        <GridRow
           key={`row-${rowIndex}`}
-          direction="horizontal" 
-          className="min-h-[300px] w-full rounded-lg border"
-        >
-          {row.map((widget, colIndex) => (
-            <React.Fragment key={widget.id}>
-              {colIndex > 0 && (
-                <ResizableHandle withHandle />
-              )}
-              <ResizablePanel
-                defaultSize={widget.size || Math.floor(100 / row.length)}
-                minSize={20}
-                onResize={(size) => onPanelResize(widget.id, size)}
-              >
-                <DashboardWidget
-                  id={widget.id}
-                  title={widget.title}
-                  description={widget.description}
-                  onRemove={onRemoveWidget}
-                  onMaximize={onMaximizeWidget}
-                  onRefresh={onRefreshWidget}
-                  className={isEditMode ? "border-dashed border-2 h-full" : "h-full"}
-                >
-                  <WidgetContent
-                    type={widget.type}
-                    data={{
-                      tasks: widgetData[`${widget.type}Tasks`],
-                      stats: widgetData.stats
-                    }}
-                  />
-                </DashboardWidget>
-              </ResizablePanel>
-            </React.Fragment>
-          ))}
-        </ResizablePanelGroup>
+          rowWidgets={rowWidgets}
+          isEditMode={isEditMode}
+          widgetData={widgetData}
+          onRemoveWidget={onRemoveWidget}
+          onMaximizeWidget={onMaximizeWidget}
+          onRefreshWidget={onRefreshWidget}
+          onPanelResize={onPanelResize}
+        />
       ))}
     </div>
   );
