@@ -1,19 +1,19 @@
 
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Menu, Plus, Search, X, CheckSquare } from 'lucide-react';
+import { Plus, Search, X, CheckSquare } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { SidebarTrigger } from '@/components/ui/sidebar';
 import TaskForm from './TaskForm';
 
 interface HeaderProps {
-  toggleSidebar: () => void;
   onSearch: (query: string) => void;
   extraContent?: React.ReactNode;
 }
 
-const Header: React.FC<HeaderProps> = ({ toggleSidebar, onSearch, extraContent }) => {
+const Header: React.FC<HeaderProps> = ({ onSearch, extraContent }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [showSearch, setShowSearch] = useState(false);
   
@@ -33,10 +33,9 @@ const Header: React.FC<HeaderProps> = ({ toggleSidebar, onSearch, extraContent }
   
   return (
     <header className="sticky top-0 z-30 flex h-16 items-center gap-4 border-b bg-background px-4 sm:px-6">
-      <Button variant="ghost" size="icon" onClick={toggleSidebar} className="md:hidden">
-        <Menu className="h-5 w-5" />
-        <span className="sr-only">Toggle Menu</span>
-      </Button>
+      <div className="md:hidden">
+        <SidebarTrigger />
+      </div>
       
       <div className="flex items-center gap-2 md:hidden">
         <Link to="/" className="flex items-center gap-2">

@@ -24,9 +24,18 @@ const ListLayout: React.FC<ListLayoutProps> = ({
   onRefreshWidget,
   onPanelResize
 }) => {
-  // Calculer une taille minimale basée sur le nombre de widgets
+  // Calculate minimum size based on widget count
   const widgetCount = widgetConfigs.length;
-  const minSize = Math.max(10, Math.floor(100 / (widgetCount * 2))); // Au moins 10% de hauteur
+  const minSize = Math.max(10, Math.floor(100 / (widgetCount * 2))); // At least 10% height
+  
+  // If no widgets, display a message
+  if (widgetConfigs.length === 0) {
+    return (
+      <div className="flex items-center justify-center h-96 bg-muted/20 rounded-lg border border-dashed">
+        <p className="text-muted-foreground">Aucun widget à afficher</p>
+      </div>
+    );
+  }
 
   return (
     <ResizablePanelGroup 
@@ -45,7 +54,7 @@ const ListLayout: React.FC<ListLayoutProps> = ({
             onResize={(size) => onPanelResize(widget.id, size)}
             className="min-h-[200px]"
           >
-            <div className="h-full w-full p-1">
+            <div className="h-full w-full p-2">
               <DashboardWidget
                 id={widget.id}
                 title={widget.title}

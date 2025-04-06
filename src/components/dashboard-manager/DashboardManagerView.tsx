@@ -40,12 +40,13 @@ const DashboardManagerView: React.FC<DashboardManagerViewProps> = ({ searchQuery
 
   return (
     <div className="container mx-auto py-6 px-4 md:px-6">
-      <div className="flex justify-between items-center mb-6">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
         <h1 className="text-2xl font-bold">Tableau de bord</h1>
         <DashboardControls />
       </div>
       
-      <div className={layout === 'list' ? 'h-[calc(100vh-180px)]' : ''}>
+      {/* Add a container with specific height for list view to ensure proper layout */}
+      <div className={layout === 'list' ? 'h-[calc(100vh-200px)]' : ''}>
         <DashboardLayout
           layout={layout}
           widgetConfigs={displayWidgets}
