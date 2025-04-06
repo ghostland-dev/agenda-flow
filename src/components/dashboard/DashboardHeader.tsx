@@ -9,10 +9,12 @@ interface DashboardHeaderProps {
   focusMode?: boolean;
   widgetConfigs: WidgetConfig[];
   layout: 'grid' | 'list';
+  widgetsPerRow: number;
   isEditMode: boolean;
   onAddWidget: (type: string) => void;
   onToggleLayout: () => void;
   onToggleEditMode: () => void;
+  onChangeWidgetsPerRow: (count: number) => void;
 }
 
 const DashboardHeader: React.FC<DashboardHeaderProps> = ({
@@ -21,10 +23,12 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({
   focusMode = false,
   widgetConfigs,
   layout,
+  widgetsPerRow,
   isEditMode,
   onAddWidget,
   onToggleLayout,
-  onToggleEditMode
+  onToggleEditMode,
+  onChangeWidgetsPerRow
 }) => {
   return (
     <div className="mb-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
@@ -37,10 +41,12 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({
         <WidgetControls 
           widgetConfigs={widgetConfigs}
           layout={layout}
+          widgetsPerRow={widgetsPerRow}
           isEditMode={isEditMode}
           onAddWidget={onAddWidget}
           onToggleLayout={onToggleLayout}
           onToggleEditMode={onToggleEditMode}
+          onChangeWidgetsPerRow={onChangeWidgetsPerRow}
         />
       )}
     </div>
