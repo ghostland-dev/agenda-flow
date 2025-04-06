@@ -22,13 +22,16 @@ interface WidgetControlsProps {
 const WidgetControls: React.FC<WidgetControlsProps> = ({
   widgetConfigs,
   layout,
-  widgetsPerRow,
+  widgetsPerRow = 3,
   isEditMode,
   onAddWidget,
   onToggleLayout,
   onToggleEditMode,
   onChangeWidgetsPerRow
 }) => {
+  // Add a fallback default value in case widgetsPerRow is undefined
+  const safeWidgetsPerRow = widgetsPerRow || 3;
+  
   const availableWidgets = getAvailableWidgetTypes().filter(
     w => !widgetConfigs.some(config => config.type === w.type && config.isVisible)
   );
@@ -39,7 +42,7 @@ const WidgetControls: React.FC<WidgetControlsProps> = ({
     <div className="flex flex-wrap items-center gap-2">
       <LayoutControls 
         layout={layout}
-        widgetsPerRow={widgetsPerRow}
+        widgetsPerRow={safeWidgetsPerRow}
         onToggleLayout={onToggleLayout}
         onChangeWidgetsPerRow={onChangeWidgetsPerRow}
       />

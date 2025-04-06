@@ -19,7 +19,7 @@ const DashboardControls: React.FC = () => {
     <WidgetControls
       widgetConfigs={widgetConfigs}
       layout={layout}
-      widgetsPerRow={widgetsPerRow}
+      widgetsPerRow={widgetsPerRow || 3}
       isEditMode={isEditMode}
       onAddWidget={handleAddWidget}
       onToggleLayout={toggleLayout}
