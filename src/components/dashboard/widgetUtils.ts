@@ -71,6 +71,31 @@ export const getDefaultWidgetConfigs = (): WidgetConfig[] => {
   ];
 };
 
+// Add the missing functions needed by DashboardManager
+export const getDefaultWidgets = (focusMode = false): WidgetConfig[] => {
+  const configs = getDefaultWidgetConfigs();
+  
+  if (focusMode) {
+    // In focus mode, only show essential widgets
+    return configs.map(widget => ({
+      ...widget,
+      isVisible: ['today-tasks', 'urgent-tasks', 'habits'].includes(widget.type)
+    }));
+  }
+  
+  return configs;
+};
+
+export const getWidgetTitle = (type: string): string => {
+  const widget = getAvailableWidgetTypes().find(w => w.type === type);
+  return widget ? widget.label : 'Widget';
+};
+
+export const getWidgetDescription = (type: string): string => {
+  const widget = getDefaultWidgetConfigs().find(w => w.type === type);
+  return widget?.description || '';
+};
+
 export const getAvailableWidgetTypes = () => {
   return [
     { type: 'today-tasks', label: 'Tâches du jour' },

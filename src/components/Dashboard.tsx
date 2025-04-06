@@ -54,7 +54,7 @@ const Dashboard: React.FC<{ focusMode?: boolean }> = ({ focusMode = false }) => 
     setOverdueTasks(
       TaskService.getTasks({
         dueBeforeDate: today,
-        completed: false
+        statuses: ['pending', 'in-progress'] // Fix: use statuses filter instead of completed
       })
     );
     
