@@ -29,7 +29,7 @@ const DashboardContent: React.FC<DashboardContentProps> = ({
 }) => {
   const visibleWidgets = widgetConfigs.filter(w => w.isVisible);
 
-  if (isEditMode) {
+  if (isEditMode && layout === 'grid') {
     return (
       <ReactSortable 
         list={visibleWidgets} 
@@ -38,17 +38,25 @@ const DashboardContent: React.FC<DashboardContentProps> = ({
         handle=".drag-handle"
       >
         {visibleWidgets.map(widget => (
-          <div key={widget.id} className="widget-item" data-id={widget.id}>
-            <DashboardLayout
-              layout="grid"
-              widgetConfigs={[widget]}
-              isEditMode={isEditMode}
-              widgetData={widgetData}
-              onRemoveWidget={onRemoveWidget}
-              onMaximizeWidget={onMaximizeWidget}
-              onRefreshWidget={onRefreshWidget}
-              onPanelResize={onPanelResize}
-            />
+          <div key={widget.id} className="widget-item h-full" data-id={widget.id}>
+            <DashboardWidget
+              key={widget.id}
+              id={widget.id}
+              title={widget.title}
+              description={widget.description}
+              onRemove={onRemoveWidget}
+              onMaximize={onMaximizeWidget}
+              onRefresh={onRefreshWidget}
+              className="border-dashed border-2 shadow-sm h-full"
+            >
+              <WidgetContent
+                type={widget.type}
+                data={{
+                  tasks: widgetData[`${widget.type}Tasks`],
+                  stats: widgetData.stats
+                }}
+              />
+            </DashboardWidget>
           </div>
         ))}
       </ReactSortable>

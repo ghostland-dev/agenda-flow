@@ -54,15 +54,17 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
       </div>
     );
   } else {
+    // Mode liste - affichage vertical
     return (
       <ResizablePanelGroup 
         direction="vertical" 
-        className="min-h-[200px] space-y-6"
+        className="min-h-[200px] w-full"
       >
         {visibleWidgets.map((widget, index, array) => (
           <React.Fragment key={widget.id}>
             <ResizablePanel
               defaultSize={widget.size}
+              minSize={20}
               onResize={(size) => onPanelResize(widget.id, size)}
               className="min-h-[200px]"
             >
@@ -73,7 +75,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
                 onRemove={onRemoveWidget}
                 onMaximize={onMaximizeWidget}
                 onRefresh={onRefreshWidget}
-                className={isEditMode ? "border-dashed border-2 shadow-sm" : "shadow-sm"}
+                className={isEditMode ? "border-dashed border-2 shadow-sm h-full" : "shadow-sm h-full"}
               >
                 <WidgetContent
                   type={widget.type}
