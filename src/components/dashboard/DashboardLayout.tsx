@@ -28,7 +28,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
 
   if (layout === 'grid') {
     return (
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {visibleWidgets.map(widget => (
           <DashboardWidget
             key={widget.id}
@@ -37,7 +37,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
             description={widget.description}
             onRemove={onRemoveWidget}
             onMaximize={onMaximizeWidget}
-            className={isEditMode ? "border-dashed border-2" : ""}
+            className={isEditMode ? "border-dashed border-2 shadow-sm" : "shadow-sm"}
           >
             <WidgetContent
               type={widget.type}
@@ -54,7 +54,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
     return (
       <ResizablePanelGroup 
         direction="vertical" 
-        className="min-h-[200px]"
+        className="min-h-[200px] space-y-6"
       >
         {visibleWidgets.map((widget, index, array) => (
           <React.Fragment key={widget.id}>
@@ -69,7 +69,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
                 description={widget.description}
                 onRemove={onRemoveWidget}
                 onMaximize={onMaximizeWidget}
-                className={isEditMode ? "border-dashed border-2" : ""}
+                className={isEditMode ? "border-dashed border-2 shadow-sm" : "shadow-sm"}
               >
                 <WidgetContent
                   type={widget.type}
@@ -81,7 +81,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
               </DashboardWidget>
             </ResizablePanel>
             {index < array.length - 1 && (
-              <ResizableHandle withHandle />
+              <ResizableHandle withHandle className="my-2" />
             )}
           </React.Fragment>
         ))}

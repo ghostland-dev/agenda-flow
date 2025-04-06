@@ -19,7 +19,7 @@ const MaximizedWidget: React.FC = () => {
   if (!widget) return null;
 
   return (
-    <div className="p-4">
+    <div className="container mx-auto py-6 px-4 md:px-6">
       <DashboardWidget
         id={widget.id}
         title={widget.title}
@@ -27,7 +27,7 @@ const MaximizedWidget: React.FC = () => {
         onRemove={handleRemoveWidget}
         onMaximize={handleMaximizeWidget}
         isMaximized={true}
-        className="h-[calc(100vh-160px)]"
+        className="h-[calc(100vh-160px)] shadow-md"
       >
         <WidgetContent
           type={widget.type}

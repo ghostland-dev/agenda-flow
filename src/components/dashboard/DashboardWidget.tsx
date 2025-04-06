@@ -27,8 +27,8 @@ const DashboardWidget: React.FC<WidgetProps> = ({
   children
 }) => {
   return (
-    <Card className={cn("h-full", className)}>
-      <CardHeader className="p-4 pb-2 flex flex-row items-center justify-between">
+    <Card className={cn("h-full transition-all hover:border-primary/20", className)}>
+      <CardHeader className="p-4 pb-2 flex flex-row items-center justify-between space-y-0">
         <div className="space-y-1">
           <CardTitle className="text-md font-medium flex items-center">
             <Move className="h-4 w-4 mr-2 text-muted-foreground drag-handle cursor-move" />
@@ -54,7 +54,7 @@ const DashboardWidget: React.FC<WidgetProps> = ({
           <Button 
             variant="ghost" 
             size="icon" 
-            className="h-7 w-7 text-destructive" 
+            className="h-7 w-7 text-destructive hover:bg-destructive/10" 
             onClick={() => onRemove(id)}
           >
             <X className="h-4 w-4" />
