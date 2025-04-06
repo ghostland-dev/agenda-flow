@@ -1,6 +1,7 @@
 
 import React from 'react';
 import { ReactSortable } from 'react-sortablejs';
+import { useIsMobile } from '@/hooks/use-mobile';
 import DashboardLayout from './DashboardLayout';
 import DashboardWidget from './DashboardWidget';
 import WidgetContent from './WidgetContent';
@@ -29,14 +30,21 @@ const DashboardContent: React.FC<DashboardContentProps> = ({
   onPanelResize,
   onSortEnd
 }) => {
+  const isMobile = useIsMobile();
   const visibleWidgets = widgetConfigs.filter(w => w.isVisible);
 
-  if (isEditMode && layout === 'grid') {
+  // Mode édition avec tri des widgets
+  if (isEditMode) {
+    // Dans tous les cas, on permet de réordonner les widgets
+    const gridClassName = isMobile
+      ? "grid grid-cols-1 gap-4"
+      : "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4";
+
     return (
       <ReactSortable 
         list={visibleWidgets} 
         setList={onSortEnd as any}
-        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"
+        className={gridClassName}
         handle=".drag-handle"
       >
         {visibleWidgets.map(widget => (
@@ -65,6 +73,7 @@ const DashboardContent: React.FC<DashboardContentProps> = ({
     );
   }
   
+  // Mode normal - on utilise le layout configurable
   return (
     <DashboardLayout
       layout={layout}
