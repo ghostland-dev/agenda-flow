@@ -10,9 +10,10 @@ import TaskForm from './TaskForm';
 interface HeaderProps {
   toggleSidebar: () => void;
   onSearch: (query: string) => void;
+  extraContent?: React.ReactNode;
 }
 
-const Header: React.FC<HeaderProps> = ({ toggleSidebar, onSearch }) => {
+const Header: React.FC<HeaderProps> = ({ toggleSidebar, onSearch, extraContent }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [showSearch, setShowSearch] = useState(false);
   
@@ -79,6 +80,8 @@ const Header: React.FC<HeaderProps> = ({ toggleSidebar, onSearch }) => {
             <span className="sr-only">Search</span>
           </Button>
         )}
+        
+        {extraContent}
         
         <Dialog>
           <DialogTrigger asChild>
