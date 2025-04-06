@@ -7,9 +7,10 @@ import DashboardLayout from '../dashboard/DashboardLayout';
 
 interface DashboardManagerViewProps {
   searchQuery?: string;
+  focusMode?: boolean;
 }
 
-const DashboardManagerView: React.FC<DashboardManagerViewProps> = ({ searchQuery }) => {
+const DashboardManagerView: React.FC<DashboardManagerViewProps> = ({ searchQuery, focusMode }) => {
   const { 
     stats, 
     widgetConfigs, 
@@ -32,6 +33,11 @@ const DashboardManagerView: React.FC<DashboardManagerViewProps> = ({ searchQuery
     return <MaximizedWidget />;
   }
 
+  // Filtrer les widgets si en mode focus
+  const displayWidgets = focusMode 
+    ? widgetConfigs.filter(widget => ['urgent-tasks', 'today-tasks'].includes(widget.type))
+    : widgetConfigs;
+
   return (
     <div className="container mx-auto py-6 px-4 md:px-6">
       <div className="flex justify-between items-center mb-6">
@@ -41,7 +47,7 @@ const DashboardManagerView: React.FC<DashboardManagerViewProps> = ({ searchQuery
       
       <DashboardLayout
         layout={layout}
-        widgetConfigs={widgetConfigs}
+        widgetConfigs={displayWidgets}
         isEditMode={isEditMode}
         widgetData={widgetData}
         onRemoveWidget={handleRemoveWidget}
