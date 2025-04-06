@@ -7,17 +7,46 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/hooks/use-toast';
 import TaskService from '@/services/taskService';
-import { AlertTriangle, Download, Trash, Upload } from 'lucide-react';
+import { AlertTriangle, Download, Trash, Upload, User, CreditCard, ShieldCheck, Cloud, BellRing, Settings as SettingsIcon } from 'lucide-react';
 import TaskImportExport from '@/components/TaskImportExport';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Switch } from '@/components/ui/switch';
+
+// Mock subscription plans for demonstration
+const subscriptionPlans = [
+  { name: 'Free', price: '0€/mois', features: ['5 catégories', 'Jusqu\'à 50 tâches', 'Exportation basique'], current: true },
+  { name: 'Premium', price: '4.99€/mois', features: ['Catégories illimitées', 'Tâches illimitées', 'Exportation avancée', 'Synchronisation multi-appareils', 'Pas de publicités'], current: false },
+  { name: 'Business', price: '9.99€/mois', features: ['Toutes les fonctionnalités Premium', 'Collaboration en équipe', 'Rapports avancés', 'API', 'Support prioritaire'], current: false },
+];
 
 const Settings = () => {
   const { toast } = useToast();
   const [taskStats, setTaskStats] = useState<any>(null);
   const [showImportExport, setShowImportExport] = useState(false);
+  const [notificationsEnabled, setNotificationsEnabled] = useState(false);
+  const [darkModeEnabled, setDarkModeEnabled] = useState(false);
+  const [syncEnabled, setSyncEnabled] = useState(false);
+  
+  // Mock user profile data
+  const [userProfile, setUserProfile] = useState({
+    name: 'Utilisateur',
+    email: 'utilisateur@exemple.com',
+    createdAt: '2025-01-15',
+  });
   
   useEffect(() => {
     const stats = TaskService.getTaskStats();
     setTaskStats(stats);
+    
+    // Load user preferences from localStorage
+    const savedNotifications = localStorage.getItem('notificationsEnabled');
+    const savedDarkMode = localStorage.getItem('darkModeEnabled');
+    const savedSync = localStorage.getItem('syncEnabled');
+    
+    if (savedNotifications) setNotificationsEnabled(savedNotifications === 'true');
+    if (savedDarkMode) setDarkModeEnabled(savedDarkMode === 'true');
+    if (savedSync) setSyncEnabled(savedSync === 'true');
   }, []);
   
   const clearAllTasks = () => {
@@ -33,6 +62,41 @@ const Settings = () => {
     setTaskStats(stats);
   };
   
+  const handleNotificationsChange = (checked: boolean) => {
+    setNotificationsEnabled(checked);
+    localStorage.setItem('notificationsEnabled', String(checked));
+    toast({
+      title: checked ? 'Notifications activées' : 'Notifications désactivées',
+      description: checked ? 'Vous recevrez des notifications pour vos tâches' : 'Vous ne recevrez plus de notifications'
+    });
+  };
+  
+  const handleDarkModeChange = (checked: boolean) => {
+    setDarkModeEnabled(checked);
+    localStorage.setItem('darkModeEnabled', String(checked));
+    toast({
+      title: checked ? 'Mode sombre activé' : 'Mode clair activé',
+      description: 'Le thème a été mis à jour'
+    });
+    // Note: This would typically modify the actual theme in a real app
+  };
+  
+  const handleSyncChange = (checked: boolean) => {
+    setSyncEnabled(checked);
+    localStorage.setItem('syncEnabled', String(checked));
+    toast({
+      title: checked ? 'Synchronisation activée' : 'Synchronisation désactivée',
+      description: checked ? 'Vos tâches seront synchronisées entre vos appareils' : 'Vos tâches ne seront plus synchronisées'
+    });
+  };
+  
+  const handleUpgradeClick = (plan: string) => {
+    toast({
+      title: 'Mise à niveau vers ' + plan,
+      description: 'Fonctionnalité de mise à niveau à venir prochainement',
+    });
+  };
+  
   if (!taskStats) {
     return <div className="text-center py-8">Chargement...</div>;
   }
@@ -41,11 +105,130 @@ const Settings = () => {
     <div className="container py-8 max-w-4xl">
       <h1 className="text-2xl font-bold mb-6">Paramètres</h1>
       
-      <Tabs defaultValue="data" className="w-full">
-        <TabsList className="w-full grid grid-cols-2 mb-6">
+      <Tabs defaultValue="profile" className="w-full">
+        <TabsList className="w-full grid grid-cols-5 mb-6">
+          <TabsTrigger value="profile">Profil</TabsTrigger>
+          <TabsTrigger value="subscription">Abonnement</TabsTrigger>
+          <TabsTrigger value="preferences">Préférences</TabsTrigger>
           <TabsTrigger value="data">Données</TabsTrigger>
           <TabsTrigger value="about">À propos</TabsTrigger>
         </TabsList>
+        
+        <TabsContent value="profile">
+          <Card>
+            <CardHeader>
+              <CardTitle>Votre Profil</CardTitle>
+              <CardDescription>
+                Gérez vos informations personnelles
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="space-y-4">
+                <div className="flex justify-center mb-4">
+                  <div className="bg-primary/10 rounded-full p-6 text-primary">
+                    <User className="h-12 w-12" />
+                  </div>
+                </div>
+                
+                <div className="space-y-2">
+                  <Label htmlFor="name">Nom</Label>
+                  <Input id="name" value={userProfile.name} onChange={(e) => setUserProfile({...userProfile, name: e.target.value})} />
+                </div>
+                
+                <div className="space-y-2">
+                  <Label htmlFor="email">Email</Label>
+                  <Input id="email" type="email" value={userProfile.email} onChange={(e) => setUserProfile({...userProfile, email: e.target.value})} />
+                </div>
+                
+                <div>
+                  <p className="text-sm text-muted-foreground">Compte créé le: {new Date(userProfile.createdAt).toLocaleDateString('fr-FR')}</p>
+                </div>
+              </div>
+            </CardContent>
+            <CardFooter>
+              <Button className="w-full">Sauvegarder</Button>
+            </CardFooter>
+          </Card>
+        </TabsContent>
+        
+        <TabsContent value="subscription">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            {subscriptionPlans.map((plan) => (
+              <Card key={plan.name} className={`${plan.current ? 'border-primary' : ''}`}>
+                <CardHeader>
+                  <CardTitle>{plan.name}</CardTitle>
+                  <CardDescription className="text-lg font-semibold">{plan.price}</CardDescription>
+                  {plan.current && <Badge className="bg-primary">Actuel</Badge>}
+                </CardHeader>
+                <CardContent>
+                  <ul className="space-y-2 text-sm">
+                    {plan.features.map((feature, index) => (
+                      <li key={index} className="flex items-center">
+                        <ShieldCheck className="h-4 w-4 mr-2 text-green-500" />
+                        {feature}
+                      </li>
+                    ))}
+                  </ul>
+                </CardContent>
+                <CardFooter>
+                  <Button 
+                    className="w-full" 
+                    variant={plan.current ? 'outline' : 'default'}
+                    onClick={() => handleUpgradeClick(plan.name)}
+                    disabled={plan.current}
+                  >
+                    {plan.current ? 'Plan actuel' : 'Mettre à niveau'}
+                  </Button>
+                </CardFooter>
+              </Card>
+            ))}
+          </div>
+        </TabsContent>
+        
+        <TabsContent value="preferences">
+          <Card>
+            <CardHeader>
+              <CardTitle>Préférences</CardTitle>
+              <CardDescription>
+                Personnalisez votre expérience TaskFlow
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h3 className="font-medium">Notifications</h3>
+                  <p className="text-sm text-muted-foreground">Recevoir des notifications pour les tâches en échéance</p>
+                </div>
+                <Switch 
+                  checked={notificationsEnabled} 
+                  onCheckedChange={handleNotificationsChange}
+                />
+              </div>
+              
+              <div className="flex items-center justify-between">
+                <div>
+                  <h3 className="font-medium">Mode sombre</h3>
+                  <p className="text-sm text-muted-foreground">Activer le thème sombre pour l'interface</p>
+                </div>
+                <Switch 
+                  checked={darkModeEnabled} 
+                  onCheckedChange={handleDarkModeChange}
+                />
+              </div>
+              
+              <div className="flex items-center justify-between">
+                <div>
+                  <h3 className="font-medium">Synchronisation multi-appareils</h3>
+                  <p className="text-sm text-muted-foreground">Synchroniser vos tâches sur tous vos appareils</p>
+                </div>
+                <Switch 
+                  checked={syncEnabled} 
+                  onCheckedChange={handleSyncChange}
+                />
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
         
         <TabsContent value="data">
           <div className="grid grid-cols-1 gap-6">
@@ -79,6 +262,20 @@ const Settings = () => {
                       >
                         <Upload className="h-4 w-4 mr-2" />
                         Importer / Exporter
+                      </Button>
+                      
+                      <Button 
+                        variant="outline" 
+                        className="w-full"
+                        onClick={() => {
+                          toast({
+                            title: "Sauvegarde cloud",
+                            description: "Fonctionnalité à venir prochainement",
+                          })
+                        }}
+                      >
+                        <Cloud className="h-4 w-4 mr-2" />
+                        Sauvegarde cloud
                       </Button>
                       
                       <AlertDialog>
