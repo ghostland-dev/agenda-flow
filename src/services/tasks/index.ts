@@ -14,6 +14,7 @@ import {
 } from './taskCrudService';
 import { calculateTaskStats, calculatePriorityScore } from './taskStatsService';
 import { exportTasks as exportTasksFunc, importTasks as importTasksFunc } from './importExportService';
+import { optimizeTasks, suggestBestTimeForTask } from './taskOptimizationService';
 
 // Main TaskService facade that combines all the functionality
 export const TaskService = {
@@ -53,7 +54,15 @@ export const TaskService = {
     }
     
     return { success: result.success, message: result.message };
-  }
+  },
+  
+  // Nouvelles fonctions d'optimisation
+  optimizeTasks: (): Task[] => {
+    const tasks = initializeLocalStorage();
+    return optimizeTasks(tasks);
+  },
+  
+  suggestBestTimeForTask
 };
 
 export default TaskService;
