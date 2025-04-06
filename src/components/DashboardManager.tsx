@@ -20,13 +20,13 @@ interface DashboardManagerProps {
 
 const DashboardManager: React.FC<DashboardManagerProps> = ({ focusMode = false, searchQuery }) => {
   const [widgetConfigs, setWidgetConfigs] = useState<WidgetConfig[]>(() => {
-    const savedWidgets = localStorage.getItem('dashboard-widgets');
-    if (savedWidgets) {
-      try {
+    try {
+      const savedWidgets = localStorage.getItem('dashboard-widgets');
+      if (savedWidgets) {
         return JSON.parse(savedWidgets);
-      } catch (e) {
-        console.error('Failed to parse widgets', e);
       }
+    } catch (e) {
+      console.error('Failed to parse widgets', e);
     }
     
     // Default widgets
@@ -39,19 +39,22 @@ const DashboardManager: React.FC<DashboardManagerProps> = ({ focusMode = false, 
   const [overdueTasks, setOverdueTasks] = useState<Task[]>([]);
   const [isEditMode, setIsEditMode] = useState(false);
   const [layout, setLayout] = useState<'grid' | 'list'>(() => {
-    const savedLayout = localStorage.getItem('dashboard-layout');
-    return (savedLayout === 'list' ? 'list' : 'grid') as 'grid' | 'list';
+    try {
+      const savedLayout = localStorage.getItem('dashboard-layout');
+      return (savedLayout === 'list' ? 'list' : 'grid') as 'grid' | 'list';
+    } catch (error) {
+      console.error('Error loading layout:', error);
+      return 'grid';
+    }
   });
   const [maximizedWidget, setMaximizedWidget] = useState<string | null>(null);
   
   const { toast } = useToast();
   
-  // Load data
   useEffect(() => {
     const taskStats = TaskService.getTaskStats();
     setStats(taskStats);
     
-    // Load urgent tasks
     const urgent = TaskService.getTasks({
       urgencies: ['immediate'],
       sortBy: 'dueDate',
@@ -59,7 +62,6 @@ const DashboardManager: React.FC<DashboardManagerProps> = ({ focusMode = false, 
     }).slice(0, 5);
     setUrgentTasks(urgent);
     
-    // Load today's tasks
     const today = new Date();
     const tomorrow = new Date(today);
     tomorrow.setDate(tomorrow.getDate() + 1);
@@ -75,7 +77,6 @@ const DashboardManager: React.FC<DashboardManagerProps> = ({ focusMode = false, 
     }).slice(0, 5);
     setTodayTasks(todayTasksList);
     
-    // Load overdue tasks
     const overdue = TaskService.getTasks({
       dueBeforeDate: today,
       statuses: ['pending', 'in-progress'],
@@ -85,20 +86,16 @@ const DashboardManager: React.FC<DashboardManagerProps> = ({ focusMode = false, 
     setOverdueTasks(overdue);
   }, []);
 
-  // Save widget configuration
   useEffect(() => {
     localStorage.setItem('dashboard-widgets', JSON.stringify(widgetConfigs));
   }, [widgetConfigs]);
 
-  // Save layout
   useEffect(() => {
     localStorage.setItem('dashboard-layout', layout);
   }, [layout]);
 
-  // Update widget visibility based on focus mode
   useEffect(() => {
     if (focusMode) {
-      // In focus mode, keep only essential widgets
       setWidgetConfigs(prevWidgets => 
         prevWidgets.map(widget => ({
           ...widget,
@@ -122,7 +119,6 @@ const DashboardManager: React.FC<DashboardManagerProps> = ({ focusMode = false, 
   };
 
   const handleAddWidget = (type: string) => {
-    // Check if widget already exists and is hidden
     const existingWidget = widgetConfigs.find(w => w.type === type && !w.isVisible);
     
     if (existingWidget) {
@@ -132,7 +128,6 @@ const DashboardManager: React.FC<DashboardManagerProps> = ({ focusMode = false, 
         )
       );
     } else {
-      // Create a new widget
       const newId = `widget-${Date.now()}`;
       const title = getWidgetTitle(type);
       
@@ -179,7 +174,6 @@ const DashboardManager: React.FC<DashboardManagerProps> = ({ focusMode = false, 
     return <div className="p-8 text-center">Chargement des données...</div>;
   }
 
-  // If a widget is maximized, display only that widget
   if (maximizedWidget) {
     const widget = widgetConfigs.find(w => w.id === maximizedWidget && w.isVisible);
     if (widget) {
@@ -211,7 +205,6 @@ const DashboardManager: React.FC<DashboardManagerProps> = ({ focusMode = false, 
     }
   }
 
-  // Prepare widget data for passing to layout
   const widgetData = {
     stats,
     'today-tasksTasks': todayTasks,

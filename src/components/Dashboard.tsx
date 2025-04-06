@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Task } from '@/types/task';
 import TaskService from '@/services/taskService';
@@ -11,13 +10,27 @@ import { useToast } from '@/hooks/use-toast';
 const Dashboard: React.FC<{ focusMode?: boolean }> = ({ focusMode = false }) => {
   const { toast } = useToast();
   const [layout, setLayout] = useState<'grid' | 'list'>(() => {
-    const savedLayout = localStorage.getItem('dashboard-layout');
-    return savedLayout ? JSON.parse(savedLayout) : 'grid';
+    try {
+      const savedLayout = localStorage.getItem('dashboard-layout');
+      // Check if savedLayout exists and is a valid value
+      if (savedLayout && (savedLayout === 'grid' || savedLayout === 'list')) {
+        return savedLayout as 'grid' | 'list';
+      }
+      return 'grid'; // Default value if not valid
+    } catch (error) {
+      console.error('Error loading layout from localStorage:', error);
+      return 'grid'; // Default to grid on error
+    }
   });
   
   const [widgetConfigs, setWidgetConfigs] = useState<WidgetConfig[]>(() => {
-    const savedConfigs = localStorage.getItem('dashboard-widgets');
-    return savedConfigs ? JSON.parse(savedConfigs) : getDefaultWidgetConfigs();
+    try {
+      const savedConfigs = localStorage.getItem('dashboard-widgets');
+      return savedConfigs ? JSON.parse(savedConfigs) : getDefaultWidgetConfigs();
+    } catch (error) {
+      console.error('Error loading widget configs from localStorage:', error);
+      return getDefaultWidgetConfigs(); // Default widgets on error
+    }
   });
   
   const [isEditMode, setIsEditMode] = useState(false);
@@ -72,7 +85,7 @@ const Dashboard: React.FC<{ focusMode?: boolean }> = ({ focusMode = false }) => 
   
   // Sauvegarder la disposition
   useEffect(() => {
-    localStorage.setItem('dashboard-layout', JSON.stringify(layout));
+    localStorage.setItem('dashboard-layout', layout);
   }, [layout]);
   
   const handleAddWidget = (type: string) => {
@@ -133,11 +146,11 @@ const Dashboard: React.FC<{ focusMode?: boolean }> = ({ focusMode = false }) => 
   
   // Données à passer aux widgets
   const widgetData = {
-    'today-tasks': todayTasks,
-    'urgent-tasks': urgentTasks,
-    'overdue-tasks': overdueTasks,
+    'today-tasksTasks': todayTasks,
+    'urgent-tasksTasks': urgentTasks,
+    'overdue-tasksTasks': overdueTasks,
     stats,
-    'task-optimizer': optimizedTasks
+    'task-optimizerTasks': optimizedTasks
   };
   
   return (
