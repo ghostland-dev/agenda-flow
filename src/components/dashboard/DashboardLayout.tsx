@@ -1,10 +1,10 @@
 
 import React from 'react';
 import { useIsMobile } from '@/hooks/use-mobile';
-import { ResizablePanelGroup, ResizablePanel, ResizableHandle } from '@/components/ui/resizable';
-import DashboardWidget from './DashboardWidget';
-import WidgetContent from './WidgetContent';
 import { WidgetConfig } from './widgetUtils';
+import GridLayout from './layouts/GridLayout';
+import ListLayout from './layouts/ListLayout';
+import MobileLayout from './layouts/MobileLayout';
 
 interface DashboardLayoutProps {
   layout: 'grid' | 'list';
@@ -33,119 +33,41 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
   // Sur mobile, toujours utiliser une disposition en liste simple
   if (isMobile) {
     return (
-      <div className="grid grid-cols-1 gap-4">
-        {visibleWidgets.map(widget => (
-          <DashboardWidget
-            key={widget.id}
-            id={widget.id}
-            title={widget.title}
-            description={widget.description}
-            onRemove={onRemoveWidget}
-            onMaximize={onMaximizeWidget}
-            onRefresh={onRefreshWidget}
-            className={isEditMode ? "border-dashed border-2 shadow-sm" : "shadow-sm"}
-          >
-            <WidgetContent
-              type={widget.type}
-              data={{
-                tasks: widgetData[`${widget.type}Tasks`],
-                stats: widgetData.stats
-              }}
-            />
-          </DashboardWidget>
-        ))}
-      </div>
+      <MobileLayout
+        widgetConfigs={visibleWidgets}
+        isEditMode={isEditMode}
+        widgetData={widgetData}
+        onRemoveWidget={onRemoveWidget}
+        onMaximizeWidget={onMaximizeWidget}
+        onRefreshWidget={onRefreshWidget}
+      />
     );
   }
 
-  // Mode grille - organisation en colonnes avec redimensionnement horizontal
+  // Mode grille ou liste selon la configuration
   if (layout === 'grid') {
-    // Diviser les widgets en rangées de 3 (ou moins si nécessaire)
-    const rows = [];
-    for (let i = 0; i < visibleWidgets.length; i += 3) {
-      rows.push(visibleWidgets.slice(i, i + 3));
-    }
-
     return (
-      <div className="space-y-4">
-        {rows.map((row, rowIndex) => (
-          <ResizablePanelGroup 
-            key={`row-${rowIndex}`}
-            direction="horizontal" 
-            className="min-h-[300px] w-full rounded-lg border"
-          >
-            {row.map((widget, colIndex) => (
-              <React.Fragment key={widget.id}>
-                {colIndex > 0 && (
-                  <ResizableHandle withHandle />
-                )}
-                <ResizablePanel
-                  defaultSize={widget.size || Math.floor(100 / row.length)}
-                  minSize={20}
-                  onResize={(size) => onPanelResize(widget.id, size)}
-                >
-                  <DashboardWidget
-                    id={widget.id}
-                    title={widget.title}
-                    description={widget.description}
-                    onRemove={onRemoveWidget}
-                    onMaximize={onMaximizeWidget}
-                    onRefresh={onRefreshWidget}
-                    className={isEditMode ? "border-dashed border-2 h-full" : "h-full"}
-                  >
-                    <WidgetContent
-                      type={widget.type}
-                      data={{
-                        tasks: widgetData[`${widget.type}Tasks`],
-                        stats: widgetData.stats
-                      }}
-                    />
-                  </DashboardWidget>
-                </ResizablePanel>
-              </React.Fragment>
-            ))}
-          </ResizablePanelGroup>
-        ))}
-      </div>
+      <GridLayout
+        widgetConfigs={visibleWidgets}
+        isEditMode={isEditMode}
+        widgetData={widgetData}
+        onRemoveWidget={onRemoveWidget}
+        onMaximizeWidget={onMaximizeWidget}
+        onRefreshWidget={onRefreshWidget}
+        onPanelResize={onPanelResize}
+      />
     );
   } else {
-    // Mode liste - avec redimensionnement vertical
     return (
-      <ResizablePanelGroup 
-        direction="vertical" 
-        className="min-h-[200px] w-full rounded-lg border"
-      >
-        {visibleWidgets.map((widget, index) => (
-          <React.Fragment key={widget.id}>
-            {index > 0 && (
-              <ResizableHandle withHandle />
-            )}
-            <ResizablePanel
-              defaultSize={widget.size || Math.floor(100 / visibleWidgets.length)}
-              minSize={15}
-              onResize={(size) => onPanelResize(widget.id, size)}
-            >
-              <DashboardWidget
-                id={widget.id}
-                title={widget.title}
-                description={widget.description}
-                onRemove={onRemoveWidget}
-                onMaximize={onMaximizeWidget}
-                onRefresh={onRefreshWidget}
-                className={isEditMode ? "border-dashed border-2 h-full" : "h-full"}
-              >
-                <WidgetContent
-                  type={widget.type}
-                  data={{
-                    tasks: widgetData[`${widget.type}Tasks`],
-                    stats: widgetData.stats
-                  }}
-                />
-              </DashboardWidget>
-            </ResizablePanel>
-          </React.Fragment>
-        ))}
-      </ResizablePanelGroup>
+      <ListLayout
+        widgetConfigs={visibleWidgets}
+        isEditMode={isEditMode}
+        widgetData={widgetData}
+        onRemoveWidget={onRemoveWidget}
+        onMaximizeWidget={onMaximizeWidget}
+        onRefreshWidget={onRefreshWidget}
+        onPanelResize={onPanelResize}
+      />
     );
   }
 };
