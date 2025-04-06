@@ -15,6 +15,7 @@ const Dashboard: React.FC<{ focusMode?: boolean }> = ({ focusMode = false }) => 
         handleAddWidget,
         handleRemoveWidget,
         handleMaximizeWidget,
+        handleRefreshWidget,
         handlePanelResize,
         handleSortEnd,
         handleToggleLayout,
@@ -43,6 +44,7 @@ const Dashboard: React.FC<{ focusMode?: boolean }> = ({ focusMode = false }) => 
             widgetData={widgetData}
             onRemoveWidget={handleRemoveWidget}
             onMaximizeWidget={handleMaximizeWidget}
+            onRefreshWidget={handleRefreshWidget}
             onPanelResize={handlePanelResize}
             onSortEnd={handleSortEnd}
           />

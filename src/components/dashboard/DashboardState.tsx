@@ -23,6 +23,7 @@ export interface DashboardStateData {
   handleAddWidget: (type: string) => void;
   handleRemoveWidget: (id: string) => void;
   handleMaximizeWidget: (id: string) => void;
+  handleRefreshWidget: (id: string) => void;
   handlePanelResize: (id: string, size: number) => void;
   handleSortEnd: (newOrder: WidgetConfig[]) => void;
   handleToggleLayout: () => void;
@@ -63,7 +64,7 @@ const DashboardState: React.FC<DashboardStateProps> = ({ focusMode = false, chil
   const [stats, setStats] = useState<any>(null);
 
   // Charger les données pour tous les widgets
-  useEffect(() => {
+  const loadData = () => {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
     
@@ -89,7 +90,7 @@ const DashboardState: React.FC<DashboardStateProps> = ({ focusMode = false, chil
     setOverdueTasks(
       TaskService.getTasks({
         dueBeforeDate: today,
-        statuses: ['pending', 'in-progress'] // Fix: use statuses filter instead of completed
+        statuses: ['pending', 'in-progress']
       })
     );
     
@@ -98,6 +99,10 @@ const DashboardState: React.FC<DashboardStateProps> = ({ focusMode = false, chil
     
     // Statistiques
     setStats(TaskService.getTaskStats());
+  };
+
+  useEffect(() => {
+    loadData();
   }, []);
 
   // Sauvegarder les configurations des widgets
@@ -144,6 +149,14 @@ const DashboardState: React.FC<DashboardStateProps> = ({ focusMode = false, chil
     console.log('Maximize widget', id);
   };
   
+  const handleRefreshWidget = (id: string) => {
+    loadData();
+    toast({
+      title: "Widget actualisé",
+      description: "Les données du widget ont été mises à jour",
+    });
+  };
+  
   const handlePanelResize = (id: string, size: number) => {
     setWidgetConfigs(prev => 
       prev.map(widget => 
@@ -188,6 +201,7 @@ const DashboardState: React.FC<DashboardStateProps> = ({ focusMode = false, chil
     handleAddWidget,
     handleRemoveWidget,
     handleMaximizeWidget,
+    handleRefreshWidget,
     handlePanelResize,
     handleSortEnd,
     handleToggleLayout,

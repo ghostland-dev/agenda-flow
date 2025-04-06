@@ -11,6 +11,7 @@ interface DashboardContentProps {
   widgetData: any;
   onRemoveWidget: (id: string) => void;
   onMaximizeWidget: (id: string) => void;
+  onRefreshWidget?: (id: string) => void;
   onPanelResize: (id: string, size: number) => void;
   onSortEnd: (newOrder: WidgetConfig[]) => void;
 }
@@ -22,6 +23,7 @@ const DashboardContent: React.FC<DashboardContentProps> = ({
   widgetData,
   onRemoveWidget,
   onMaximizeWidget,
+  onRefreshWidget,
   onPanelResize,
   onSortEnd
 }) => {
@@ -44,6 +46,7 @@ const DashboardContent: React.FC<DashboardContentProps> = ({
               widgetData={widgetData}
               onRemoveWidget={onRemoveWidget}
               onMaximizeWidget={onMaximizeWidget}
+              onRefreshWidget={onRefreshWidget}
               onPanelResize={onPanelResize}
             />
           </div>
@@ -60,6 +63,7 @@ const DashboardContent: React.FC<DashboardContentProps> = ({
       widgetData={widgetData}
       onRemoveWidget={onRemoveWidget}
       onMaximizeWidget={onMaximizeWidget}
+      onRefreshWidget={onRefreshWidget}
       onPanelResize={onPanelResize}
     />
   );

@@ -8,6 +8,9 @@ export interface WidgetConfig {
   description?: string;
   size: number;
   isVisible: boolean;
+  color?: string;
+  icon?: string;
+  refreshInterval?: number; // en millisecondes
 }
 
 export const getDefaultWidgetConfigs = (): WidgetConfig[] => {
@@ -18,7 +21,8 @@ export const getDefaultWidgetConfigs = (): WidgetConfig[] => {
       title: "Tâches du jour",
       description: "Tâches prévues pour aujourd'hui",
       size: 33,
-      isVisible: true
+      isVisible: true,
+      color: 'blue'
     },
     {
       id: uuidv4(),
@@ -26,7 +30,8 @@ export const getDefaultWidgetConfigs = (): WidgetConfig[] => {
       title: "Tâches urgentes",
       description: "Tâches nécessitant une attention immédiate",
       size: 33,
-      isVisible: true
+      isVisible: true,
+      color: 'red'
     },
     {
       id: uuidv4(),
@@ -34,7 +39,8 @@ export const getDefaultWidgetConfigs = (): WidgetConfig[] => {
       title: "Répartition par priorité",
       description: "Distribution des tâches par niveau de priorité",
       size: 33,
-      isVisible: true
+      isVisible: true,
+      color: 'purple'
     },
     {
       id: uuidv4(),
@@ -42,7 +48,8 @@ export const getDefaultWidgetConfigs = (): WidgetConfig[] => {
       title: "Répartition par catégorie",
       description: "Distribution des tâches par catégorie",
       size: 33,
-      isVisible: false
+      isVisible: false,
+      color: 'green'
     },
     {
       id: uuidv4(),
@@ -50,7 +57,8 @@ export const getDefaultWidgetConfigs = (): WidgetConfig[] => {
       title: "Tâches en retard",
       description: "Tâches dont la date d'échéance est dépassée",
       size: 33,
-      isVisible: false
+      isVisible: false,
+      color: 'amber'
     },
     {
       id: uuidv4(),
@@ -58,7 +66,8 @@ export const getDefaultWidgetConfigs = (): WidgetConfig[] => {
       title: "Suivi des habitudes",
       description: "Progression de vos habitudes quotidiennes",
       size: 33,
-      isVisible: false
+      isVisible: false,
+      color: 'teal'
     },
     {
       id: uuidv4(),
@@ -66,7 +75,8 @@ export const getDefaultWidgetConfigs = (): WidgetConfig[] => {
       title: "Optimiseur de tâches",
       description: "Ordre optimal pour compléter vos tâches",
       size: 33,
-      isVisible: true
+      isVisible: true,
+      color: 'indigo'
     }
   ];
 };

@@ -12,6 +12,7 @@ interface DashboardLayoutProps {
   widgetData: any;
   onRemoveWidget: (id: string) => void;
   onMaximizeWidget: (id: string) => void;
+  onRefreshWidget?: (id: string) => void;
   onPanelResize: (id: string, size: number) => void;
 }
 
@@ -22,6 +23,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
   widgetData,
   onRemoveWidget,
   onMaximizeWidget,
+  onRefreshWidget,
   onPanelResize
 }) => {
   const visibleWidgets = widgetConfigs.filter(widget => widget.isVisible);
@@ -37,6 +39,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
             description={widget.description}
             onRemove={onRemoveWidget}
             onMaximize={onMaximizeWidget}
+            onRefresh={onRefreshWidget}
             className={isEditMode ? "border-dashed border-2 shadow-sm" : "shadow-sm"}
           >
             <WidgetContent
@@ -69,6 +72,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
                 description={widget.description}
                 onRemove={onRemoveWidget}
                 onMaximize={onMaximizeWidget}
+                onRefresh={onRefreshWidget}
                 className={isEditMode ? "border-dashed border-2 shadow-sm" : "shadow-sm"}
               >
                 <WidgetContent
