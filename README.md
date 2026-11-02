@@ -1,5 +1,7 @@
 # Agenda Flow
 
+[![CI](https://github.com/ghostland-dev/agenda-flow/actions/workflows/ci.yml/badge.svg)](https://github.com/ghostland-dev/agenda-flow/actions/workflows/ci.yml)
+
 Agenda and task planner with drag-and-drop organisation.
 
 ## Features
